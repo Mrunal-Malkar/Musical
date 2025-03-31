@@ -1,0 +1,28 @@
+import mongoose from "mongoose";
+import connectDB from "../db/mongoose";
+
+async function initializeDB() {
+  await connectDB();
+}
+
+await initializeDB();
+
+const streamSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  smallImage:{
+    type:String,
+    required:false,
+  },
+  upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+});
+
+const Stream = mongoose.model("Stream", streamSchema);
+
+export default Stream;
