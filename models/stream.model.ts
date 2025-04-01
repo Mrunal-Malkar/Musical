@@ -23,6 +23,6 @@ const streamSchema = new mongoose.Schema({
   upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
-const Stream = mongoose.model("Stream", streamSchema);
+const Stream = mongoose.models.Stream || mongoose.model("Stream", streamSchema);
 
 export default Stream;
