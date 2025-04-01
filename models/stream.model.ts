@@ -16,7 +16,7 @@ const streamSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  smallImage:{
+  imageUrl:{
     type:String,
     required:false,
   },
