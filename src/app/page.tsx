@@ -1,21 +1,15 @@
 "use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
+import Navbar from "./components/navbar";
 
 export default function Home() {
   const { status } = useSession();
 
 
   return (
-    <div className="flex text-black justify-around w-full bg-white">
-      <div>Musical</div>
-      <div>
-        {status === "authenticated" ? (
-          <button onClick={() => signOut()}>Log-out</button>
-        ) : (
-          <button onClick={() => signIn()}>Sign-in</button>
-        )}
-      </div>
+    <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-800 to-slate-900">
+      <Navbar/>
     </div>
   );
 }
