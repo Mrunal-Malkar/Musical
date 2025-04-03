@@ -21,7 +21,7 @@ const Navbar = () => {
             className="text-indigo-500 text-2xl"
           />
         </div>
-        <h1 className="font-bold tracking-tight text-white text-2xl">
+        <h1 className="font-bold tracking-tight text-white text-xl sm:text-2xl">
           Musical
         </h1>
       </div>
@@ -66,7 +66,7 @@ const Navbar = () => {
       <div className="sm:hidden flex gap-x-1">
         <button
           onClick={() => (status == "authenticated" ? signOut() : signIn())}
-          className=" bg-gradient-to-br from-violet-700 to-violet-900 text-white p-2 rounded-lg font-mono"
+          className=" bg-gradient-to-br from-violet-700 to-violet-900 text-white p-1 px-1.5 text-sm font-semibold rounded-lg font-mono"
         >
           {status == "authenticated" ? <h1>Log-Out</h1> : <h1>Sign-In</h1>}
         </button>
