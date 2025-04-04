@@ -32,11 +32,11 @@ export default function Home() {
             by listeners, for listeners.
           </span>
           <div className="flex justify-center gap-y-3 sm:gap-x-4 align-middle flex-col sm:flex-row items-center font-[450]">
-            <button className="p-2 px-4  bg-gradient-to-tr from-violet-600 flex items-center justify-center to-violet-800 rounded-md text-gray-100 gap-x-2 ">
+            <button className="p-2 px-4  bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110">
               <FontAwesomeIcon icon={faPlay} className="text-gray-300" />
               Start Listening
             </button>
-            <button className="p-2 px-4 border-[1px] border-violet-500  bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md  gap-x-2 text-violet-600">
+            <button className="p-2 px-4 border-[1px] border-violet-500  bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md  gap-x-2 text-violet-600 hover:to-white hover:scale-110">
               <FontAwesomeIcon
                 icon={faArrowTrendUp}
                 className="text-violet-600"

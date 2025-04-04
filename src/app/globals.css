@@ -5,6 +5,10 @@
   --foreground: #171717;
 }
 
+*{
+  transition: all 0.2s ease-in-out;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

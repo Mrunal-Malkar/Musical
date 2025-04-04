@@ -34,13 +34,13 @@ const Navbar = () => {
             Home
           </span>
         </Link>
-        <Link href="/=Dashboard">
+        <Link href="/zone">
           <span
             className={
-              currentPath == "/Dashboard" ? "text-white" : "text-indigo-400"
+              currentPath == "/zone" ? "text-white" : "text-indigo-400"
             }
           >
-            Dashboard
+            Zone
           </span>
         </Link>
       </div>
@@ -91,15 +91,15 @@ const Navbar = () => {
               </span>
             </Link>
             <Link
-              href="/=Dashboard"
+              href="/zone"
               className="p-3 hover:backdrop-blur-none bg-black"
             >
               <span
                 className={
-                  currentPath == "/Dashboard" ? "text-white" : "text-indigo-400"
+                  currentPath == "/zone" ? "text-white" : "text-indigo-400"
                 }
               >
-                Dashboard
+                zone
               </span>
             </Link>
           </div>
