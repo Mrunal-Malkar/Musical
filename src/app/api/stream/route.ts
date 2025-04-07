@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import Stream from "../../../../models/stream.model";
 
-export default async function GET() {
+export async function GET() {
   try {
     const streams = await Stream.find({}).sort({ upvotes: -1 }).limit(10);
     return NextResponse.json(
       {
-        streams,
+        streams:streams,
       },
       { status: 200 }
     );

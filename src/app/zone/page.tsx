@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import Navbar from "../components/navbar";
 import {
   faPlay,
@@ -6,92 +6,142 @@ import {
   faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Register from "../register/page";
+import { useEffect, useState } from "react";
 
 const Zone = () => {
+  type stream = {
+    _id:string,
+     url:string,
+      title:string,
+      imageUrl:string,
+      upvotes:number,
+      channelName:string,
+      duration:string,
+  };
+
+  const [streams, setStreams] = useState<stream[]>([]);
+  const [currentStream, setCurrentStream] = useState();
+
+  const fetchStreams = async () => {
+    const streams = await fetch("http://localhost:3000/api/stream", {
+      method: "GET",
+    });
+    if (streams.status == 200) {
+      const tracks = await streams.json();
+      console.log(tracks.streams);
+      return setStreams(tracks.streams);
+    } else {
+      return null;
+    }
+  };
+  useEffect(() => {
+    fetchStreams();
+  }, []);
+
   return (
     <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <Navbar />
-      <Register />
       <div className="w-full flex md:flex-row flex-col justify-center align-middle">
         <div className="xl:pt-25 xl:pe-25 xl:ps-25 xl:w-11/12 w-full flex xl:flex-row flex-col-reverse items-center justify-center align-middle">
           <div className="xl:w-1/2  xl:mt-0 xl:mb-0 mt-4 mb-4 md:w-11/12 w-full flex flex-col justify-start">
             <div className="text-2xl sm:text-3xl m-2 md:text-4xl text-white font-bold font-sans">
               <h1>Currently playing</h1>
             </div>
-            <div className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[110px] backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between">
-              <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                <img
-                  className="border border-gray-300"
-                  src="https://i.ytimg.com/vi/GhH1QWY6BDc/default.jpg"
-                  width="240"
-                  height="60"
-                  alt="YouTube video thumbnail"
-                />
-              </div>
-              <div className="w-6/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col overflow-x-auto">
-                <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl">
-                  title caption <span className="sm:hidden block">|</span>
-                  <span className="text-center text-md md:text-lg text-gray-400">
-                    title
-                  </span>
-                </h1>
-                <div className="w-full text-gray-200 flex justify-between">
-                  3:00 min
-                  <div className="inline text-gray-200">
-                    <FontAwesomeIcon
-                      className="text-xl text-violet-500"
-                      icon={faPlay}
-                    />
-                    Play
+            {currentStream ? (
+              <div className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[110px] backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between">
+                <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
+                  <img
+                    className="border border-gray-300"
+                    src={val.thumbnail}
+                    width="240"
+                    height="60"
+                    alt="YouTube video thumbnail"
+                  />
+                </div>
+                <div className="w-6/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col overflow-x-auto">
+                  <h1 className="text-center text-wrap flex-wrap flex justify-between w-full text-gray-200 text-lg md:text-xl">
+                    title caption <span className="sm:hidden block">|</span>
+                    <span className="text-center text-md md:text-lg text-gray-400">
+                      title
+                    </span>
+                  </h1>
+                  <div className="w-full text-gray-200 flex justify-between">
+                    3:00min
+                    <div className="inline text-gray-200">
+                      <FontAwesomeIcon
+                        className="text-xl text-violet-500"
+                        icon={faPlay}
+                      />
+                      Play
+                    </div>
                   </div>
                 </div>
+                <div className="justify-self-end">
+                  <FontAwesomeIcon
+                    className="text-2xl text-indigo-500"
+                    icon={faThumbsUp}
+                  />
+                </div>
               </div>
-              <div className="justify-self-end">
-                <FontAwesomeIcon
-                  className="text-2xl text-indigo-500"
-                  icon={faThumbsUp}
-                />
+            ) : (
+              <div className="w-full ms-4 text-red-600 font-bold text-2xl">
+                No songs added!
               </div>
-            </div>
+            )}
             <div className="text-xl sm:text-2xl font-semibold tracking-tighter font-sans text-white m-2 mt-5">
               Up Nexts-
             </div>
-            <div className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between">
-              <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                <img
-                  className="border border-gray-300"
-                  src="https://i.ytimg.com/vi/GhH1QWY6BDc/default.jpg"
-                  width="240"
-                  height="50"
-                  alt="YouTube video thumbnail"
-                />
-              </div>
-              <div className="w-6/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col overflow-x-auto">
-                <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl">
-                  title caption <span className="sm:hidden block">|</span>
-                  <span className="text-center text-md md:text-lg text-gray-400">
-                    title
-                  </span>
-                </h1>
-                <div className="w-full text-gray-200 flex justify-between">
-                  3:00 min
-                  <div className="inline text-gray-200">
-                    <FontAwesomeIcon
-                      className="text-xl text-violet-500"
-                      icon={faPlay}
-                    />
-                    Play
-                  </div>
-                </div>
-              </div>
-              <div className="justify-self-end">
-                <FontAwesomeIcon
-                  className="text-2xl text-indigo-500"
-                  icon={faThumbsUp}
-                />
-              </div>
-            </div>
+            {streams.length >= 1
+              ? streams.map((val) => {
+                  return (
+                    <div
+                      key={val._id}
+                      className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
+                    >
+                      <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
+                        <img
+                          className="border border-gray-300"
+                          src={val.imageUrl}
+                          width="240"
+                          height="50"
+                          alt="YouTube video thumbnail"
+                        />
+                      </div>
+                      <div className="w-6/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
+                        <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto ">
+                          {val.title}
+                          <span className="sm:hidden block">|</span>
+                          <span className="text-center text-md md:text-lg text-gray-400">
+                            {val.channelName}
+                          </span>
+                        </h1>
+                      </div>
+                      <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
+                      <div className="text-gray-200 flex justify-between">
+                          {val.duration}
+                          <div className="inline text-gray-200">
+                            <FontAwesomeIcon
+                              className="text-xl text-violet-500"
+                              icon={faPlay}
+                            />
+                            <span className="md:blok hidden">Play</span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col justify-center items-center">
+                        <FontAwesomeIcon
+                          className="text-2xl text-indigo-500"
+                          icon={faThumbsUp}
+                        />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              : 
+              <div
+              className="w-full ms-4 text-red-600 font-bold text-2xl">
+                No songs added! </div>
+              }
           </div>
           <div className="xl:w-1/2 xl:mt-0 xl:mb-0 mt-4 mb-4 xl:justify-self-start justify-self-auto self-auto xl:self-start md:w-11/12 w-full flex flex-col-reverse xl:flex-col">
             <div className="w-full flex flex-col items-center xl:block">

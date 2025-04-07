@@ -1,6 +1,4 @@
-"use client";
-
-import { signIn, signOut, useSession } from "next-auth/react";
+"use client"
 import Navbar from "./components/navbar";
 import {
   faArrowTrendUp,
@@ -9,16 +7,31 @@ import {
   faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 
 export default function Home() {
-  const { status } = useSession();
-  const Songs = [
-    { index: 1 },
-    { index: 2 },
-    { index: 3 },
-    { index: 4 },
-    { index: 5 },
-  ];
+  
+  const [streams,setStreams]=useState([]);
+
+  const fetchStreams=async()=>{
+    const streams=await fetch("http://localhost:3000/api/stream",{method:"GET"});
+    if(streams.status==200){
+      const tracks=await streams.json();
+      setStreams(tracks);
+      console.log(tracks);
+    }else{
+      setStreams([]);
+    } 
+  }
+
+  const Songs=[
+    {index:1},
+    {index:2},
+    {index:3},
+    {index:4},
+    {index:5},
+  ]
+
   return (
     <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-800 to-slate-900">
       <Navbar />

@@ -12,6 +12,12 @@ const streamSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  channelName:{
+    type:String
+  },
+  duration:{
+    type:String,
+  },
   title: {
     type: String,
     required: true,

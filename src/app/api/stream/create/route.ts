@@ -21,11 +21,13 @@ export async function POST(req: NextRequest) {
     const extractedId = (await match) ? match[1] : null;
     console.log("the extracted id is:", extractedId);
     const requestingYtApi = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?id=${extractedId}&key=${process.env.YOUTUBE_API_KEY}&part=snippet`
+      `https://www.googleapis.com/youtube/v3/videos?id=${extractedId}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,contentDetails`
     );
     const ytData = await requestingYtApi.json();
     const title = ytData.items[0].snippet.title;
+    const channelName=ytData.items[0].snippet.channelTittle;
     const imgUrl = ytData.items[0].snippet.thumbnails.default.url;
+    const videoDuration=ytData.items[0].contentDetails.duration;
 
     if (url && imgUrl && title) {
       const findStream = await Stream.findOne({ url: url });
@@ -39,10 +41,24 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      function convertDuration(iso:string) {
+        const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+        const h = parseInt(match?.[1] || '0');
+        const m = parseInt(match?.[2] || '0');
+        const s = parseInt(match?.[3] || '0');
+      
+        if (h) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        else return `${m}:${String(s).padStart(2, '0')}`;
+      }
+
+      const duration=convertDuration(videoDuration);
+
       await Stream.create({
         url: url,
         imageUrl: imgUrl,
+        duration:duration,
         title: title,
+        channelName:channelName,
       });
       return NextResponse.json(
         {
