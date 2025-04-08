@@ -7,20 +7,40 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import YTPlayer from "../components/player";
+import { signIn, useSession } from "next-auth/react";
 
 const Zone = () => {
   type stream = {
-    _id:string,
-     url:string,
-      title:string,
-      imageUrl:string,
-      upvotes:number,
-      channelName:string,
-      duration:string,
+    _id: string;
+    url: string;
+    title: string;
+    imageUrl: string;
+    upvotes: number;
+    channelName: string;
+    duration: string;
   };
+
+  const {data:session}=useSession();
 
   const [streams, setStreams] = useState<stream[]>([]);
   const [currentStream, setCurrentStream] = useState();
+  const [URL, setURL] = useState("GhH1QWY6BDc");
+  const [videoId, setVideoId] = useState<string>("");
+
+  useEffect(() => {
+    console.log("This is the url", URL);
+    const regex =
+      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
+    const match = URL.match(regex);
+    if (match) {
+      const extractedId = match[1];
+      setVideoId(extractedId);
+    } else {
+      toast.error("Invalid YouTube URL");
+    }
+  }, [URL]);
 
   const fetchStreams = async () => {
     const streams = await fetch("http://localhost:3000/api/stream", {
@@ -34,13 +54,41 @@ const Zone = () => {
       return null;
     }
   };
+
+  const addSong = async () => {
+    if(!session?.user?.email){
+      toast.error("Please login to add songs to queue");
+      return signIn();
+    }
+    const regex =
+      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
+    const match = URL.match(regex);
+    if (!match) {
+      toast.error("incorrect url");
+    }
+    await fetch("/api/stream/create", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ url: URL,userEmail:session?.user?.email }),
+    });
+    await fetchStreams();
+  };
+
   useEffect(() => {
     fetchStreams();
+    if (streams.length >= 1) {
+      streams.map((val) => console.log("This is the upvotes", val.upvotes));
+    }
   }, []);
 
+
   return (
+    <>
     <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <Navbar />
+      <ToastContainer />
       <div className="w-full flex md:flex-row flex-col justify-center align-middle">
         <div className="xl:pt-25 xl:pe-25 xl:ps-25 xl:w-11/12 w-full flex xl:flex-row flex-col-reverse items-center justify-center align-middle">
           <div className="xl:w-1/2  xl:mt-0 xl:mb-0 mt-4 mb-4 md:w-11/12 w-full flex flex-col justify-start">
@@ -52,7 +100,7 @@ const Zone = () => {
                 <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
                   <img
                     className="border border-gray-300"
-                    src={val.thumbnail}
+                    src={currentStream.thumbnail}
                     width="240"
                     height="60"
                     alt="YouTube video thumbnail"
@@ -91,57 +139,58 @@ const Zone = () => {
             <div className="text-xl sm:text-2xl font-semibold tracking-tighter font-sans text-white m-2 mt-5">
               Up Nexts-
             </div>
-            {streams.length >= 1
-              ? streams.map((val) => {
-                  return (
-                    <div
-                      key={val._id}
-                      className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
-                    >
-                      <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                        <img
-                          className="border border-gray-300"
-                          src={val.imageUrl}
-                          width="240"
-                          height="50"
-                          alt="YouTube video thumbnail"
-                        />
-                      </div>
-                      <div className="w-6/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
-                        <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto ">
-                          {val.title}
-                          <span className="sm:hidden block">|</span>
-                          <span className="text-center text-md md:text-lg text-gray-400">
-                            {val.channelName}
-                          </span>
-                        </h1>
-                      </div>
-                      <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
-                      <div className="text-gray-200 flex justify-between">
-                          {val.duration}
-                          <div className="inline text-gray-200">
-                            <FontAwesomeIcon
-                              className="text-xl text-violet-500"
-                              icon={faPlay}
-                            />
-                            <span className="md:blok hidden">Play</span>
-                          </div>
+            {streams.length >= 1 ? (
+              streams.map((val) => {
+                return (
+                  <div
+                    key={val._id}
+                    className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
+                  >
+                    <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
+                      <img
+                        className="border border-gray-300"
+                        src={val.imageUrl}
+                        width="240"
+                        height="50"
+                        alt="YouTube video thumbnail"
+                      />
+                    </div>
+                    <div className="w-6/12 md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
+                      <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto scroolbar-none ">
+                        {val.title}
+                        <span className="sm:hidden block">|</span>
+                        <span className="text-center text-md md:text-lg text-gray-400">
+                          {val.channelName}
+                        </span>
+                      </h1>
+                    </div>
+                    <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
+                      <div className="text-gray-200 flex flex-col justify-center items-center">
+                        <p className="md:block hidden">{val.duration}</p>
+                        <div className="inline text-gray-200">
+                          <FontAwesomeIcon
+                            className="text-xl text-violet-500"
+                            icon={faPlay}
+                          />
+                          <span className="md:blok hidden">Play</span>
                         </div>
-                        <div className="flex flex-col justify-center items-center">
+                      </div>
+                      <div className="flex flex-col justify-center items-center">
                         <FontAwesomeIcon
-                          className="text-2xl text-indigo-500"
+                          className="text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
                           icon={faThumbsUp}
                         />
-                        </div>
+                        <p className="text-gray-100">no</p>
                       </div>
                     </div>
-                  );
-                })
-              : 
-              <div
-              className="w-full ms-4 text-red-600 font-bold text-2xl">
-                No songs added! </div>
-              }
+                  </div>
+                );
+              })
+            ) : (
+              <div className="w-full ms-4 text-red-600 font-bold text-2xl">
+                No songs added!{" "}
+              </div>
+            )}
           </div>
           <div className="xl:w-1/2 xl:mt-0 xl:mb-0 mt-4 mb-4 xl:justify-self-start justify-self-auto self-auto xl:self-start md:w-11/12 w-full flex flex-col-reverse xl:flex-col">
             <div className="w-full flex flex-col items-center xl:block">
@@ -160,10 +209,14 @@ const Zone = () => {
               <div className="flex flex-col border-none w-10/12 md:w-3/4 sm:w-3/4">
                 <input
                   type="text"
+                  onChange={(e) => setURL(e.target.value)}
                   placeholder="enter the URL here"
                   className="bg-gray-700 m-0.5 focus:border-[1px] focus:border-gray-400 rounded-md outline-none text-gray-100 text-xl p-2"
-                />
-                <button className="bg-violet-600 rounded-md p-2 text-lg text-white">
+                  />
+                <button
+                  onClick={() => addSong()}
+                  className="bg-violet-600 rounded-md p-2 text-lg text-white"
+                  >
                   Add to Queue
                 </button>
               </div>
@@ -174,8 +227,8 @@ const Zone = () => {
                   Now Playing
                 </h1>
               </div>
-              <div className="p-2 bg-black rounded-md md:h-56 h-48 w-full max-w-80 md:w-96 md:m-2 flex justify-center align-middle items-center">
-                <div className="w-full h-full bg-zinc-800">ad</div>
+              <div className="p-2 bg-gray-700 rounded-md md:h-56 h-48 w-full max-w-80 md:w-96 md:m-2 flex justify-center align-middle items-center">
+                <YTPlayer videoId={videoId} />
               </div>
               <button className="px-4 gap-x-2 text-gray-300 flex justify-center items-center m-2 w-10/12 sm:w-6/12 md:w-4/12 p-2 bg-violet-700">
                 <FontAwesomeIcon className="text-xl" icon={faPlay} />
@@ -186,6 +239,7 @@ const Zone = () => {
         </div>
       </div>
     </div>
+                  </>
   );
 };
 

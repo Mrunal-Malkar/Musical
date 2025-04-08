@@ -18,6 +18,9 @@ const streamSchema = new mongoose.Schema({
   duration:{
     type:String,
   },
+  creator:{
+    type:String,
+  },
   title: {
     type: String,
     required: true,

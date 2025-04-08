@@ -4,13 +4,14 @@ import connectDB from "../../../../../db/mongoose";
 
 export async function POST(req: NextRequest) {
   try {
-    const { url } = await req.json();
+    const { url,userEmail } = await req.json();
     const regex =
       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
 
     const match = url.match(regex);
 
-    if (!match || !url.includes("youtube")) {
+    if (!match || !url.includes("youtube") || !userEmail) {
+      console.log("not a valid youtube url");
       return NextResponse.json(
         { message: "incorrect url of yt" },
         { status: 411 }
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest) {
         url: url,
         imageUrl: imgUrl,
         duration:duration,
+        creator:userEmail,
         title: title,
         channelName:channelName,
       });
