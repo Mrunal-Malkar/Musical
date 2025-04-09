@@ -8,7 +8,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import YTPlayer from "../components/player";
 import { signIn, useSession } from "next-auth/react";
 
 const Zone = () => {
@@ -17,12 +16,13 @@ const Zone = () => {
     url: string;
     title: string;
     imageUrl: string;
+    creator: string;
     upvotes: number;
     channelName: string;
     duration: string;
   };
 
-  const ytPlayerRef=useRef<any>(null);
+  const ytPlayerRef = useRef<any>(null);
   const { data: session } = useSession();
   const [streams, setStreams] = useState<stream[]>([]);
   const [currentStream, setCurrentStream] = useState();
@@ -37,7 +37,7 @@ const Zone = () => {
     if (match) {
       const extractedId = match[1];
       setVideoId(extractedId);
-    } else {
+    } else if (URL != "") {
       toast.error("Invalid YouTube URL");
     }
   }, [URL]);
@@ -54,7 +54,7 @@ const Zone = () => {
 
     //@ts-ignore
     window.onYouTubeIframeAPIReady = function () {
-      if(ytPlayerRef.current){
+      if (ytPlayerRef.current) {
         ytPlayerRef.current.destroy();
       }
       //@ts-ignore
@@ -63,7 +63,7 @@ const Zone = () => {
         width: "640",
         videoId: videoId,
         events: {
-          "onStateChange": (event) => {
+          onStateChange: (event) => {
             if (event.data === 0) {
               console.log("Video ended");
             }
@@ -74,9 +74,9 @@ const Zone = () => {
   };
 
   useEffect(() => {
-    if(ytPlayerRef.current && ytPlayerRef.current.loadVideoById){
+    if (ytPlayerRef.current && ytPlayerRef.current.loadVideoById) {
       ytPlayerRef.current.loadVideoById(videoId);
-    }else{
+    } else {
       YTPlayer();
     }
   }, [videoId]);
@@ -88,10 +88,25 @@ const Zone = () => {
     if (streams.status == 200) {
       const tracks = await streams.json();
       console.log(tracks.streams);
-      return setStreams(tracks.streams);
+      if (streams != tracks.streams) {
+        return setStreams(tracks.streams);
+      } else {
+        return null;
+      }
     } else {
       return null;
     }
+  };
+
+  const calculateLikes = (likes: number | Array<object>) => {
+    if (typeof likes === "number") {
+      return likes;
+    }
+    let val = 0;
+    likes.map(() => {
+      return (val += 1);
+    });
+    return val;
   };
 
   const addSong = async () => {
@@ -115,11 +130,28 @@ const Zone = () => {
     await fetchStreams();
   };
 
+  const addLike = async (id: string, user: string) => {
+    try {
+      const response = await fetch("api/stream/upvote", {
+        method: "POST",
+        headers: {
+          content: "application/json",
+        },
+        body: JSON.stringify({ streamId: id, userEmail: user }),
+      });
+      if (response.status == 200) {
+        toast.success("upvotes the stream sucessfully!");
+        fetchStreams();
+      } else {
+        toast.error("error in upvoting the stream");
+      }
+    } catch (err: unknown) {
+      toast.error(`error in upvoting the stream:${err}`);
+    }
+  };
+
   useEffect(() => {
     fetchStreams();
-    if (streams.length >= 1) {
-      streams.map((val) => console.log("This is the upvotes", val.upvotes));
-    }
   }, []);
 
   return (
@@ -213,12 +245,19 @@ const Zone = () => {
                             <span className="md:blok hidden">Play</span>
                           </div>
                         </div>
-                        <div className="flex flex-col justify-center items-center">
+                        <div
+                          className="flex flex-col justify-center items-center"
+                          onClick={() => {
+                            addLike(val._id,session?.user?.email as string);
+                          }}
+                        >
                           <FontAwesomeIcon
                             className="text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
                             icon={faThumbsUp}
                           />
-                          <p className="text-gray-100">no</p>
+                          <p className="text-gray-100">
+                            {calculateLikes(val.upvotes)}
+                          </p>
                         </div>
                       </div>
                     </div>

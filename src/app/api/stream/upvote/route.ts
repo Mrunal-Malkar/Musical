@@ -3,8 +3,8 @@ import User from "../../../../../models/user.model";
 import Stream from "../../../../../models/stream.model";
 
 export async function POST(req: NextRequest) {
-  const { streamId, userId } = await req.json();
-  if (!streamId || !userId) {
+  const { streamId, userEmail } = await req.json();
+  if (!streamId || !userEmail) {
     return NextResponse.json(
       {
         message: "please provide all info",
@@ -14,13 +14,13 @@ export async function POST(req: NextRequest) {
       }
     );
   }
-  const user = await User.findOne({ _id: userId });
-  const stream = await Stream.findOne({ _id: streamId });
+  const user = await User.findOne({ email: userEmail });
+  const stream = await Stream.findById({ _id: streamId });
 
   if (user && stream) {
     await Stream.findOneAndUpdate(
-      { _id: stream },
-      { $addToSet: { upvotes: userId } }
+      { _id: stream._id },
+      { $addToSet: { upvotes: user._id } }
     );
     return NextResponse.json(
       {
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     );
   } else {
     return NextResponse.json({
-      message: "error data cannot upvote",
+      message: "erro:no user or stream found",
       status: 404,
     });
   }

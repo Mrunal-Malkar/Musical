@@ -5,15 +5,16 @@ import connectDB from "../../../../../db/mongoose";
 export async function POST(req: NextRequest) {
   try {
     const { url,userEmail } = await req.json();
+    console.log("user email is",userEmail)
+    console.log("url is",url)
     const regex =
-      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
+    /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
+  const match = url.match(regex);
 
-    const match = url.match(regex);
-
-    if (!match || !url.includes("youtube") || !userEmail) {
+    if (!match || !userEmail) {
       console.log("not a valid youtube url");
       return NextResponse.json(
-        { message: "incorrect url of yt" },
+        { message: "incorrect url of yt/or no userEmail" },
         { status: 411 }
       );
     }

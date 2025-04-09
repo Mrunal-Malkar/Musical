@@ -3,9 +3,9 @@ import User from "../../../../../models/user.model";
 import Stream from "../../../../../models/stream.model";
 
 export async function POST(req: NextRequest) {
-  const { streamId, userId } = await req.json();
+  const { streamId, userEmail } = await req.json();
 
-  const user = await User.findById({ _id: userId });
+  const user = await User.findOne({ email: userEmail });
   const stream = await Stream.findById({ _id: streamId });
 
   if (!user || !stream) {
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
   const updateStream = await Stream.findOneAndUpdate(
     { _id: streamId },
-    { $pull:{upvotes: userId } }
+    { $pull:{upvotes: user._Id } }
   );
   if (!updateStream) {
     return NextResponse.json(
