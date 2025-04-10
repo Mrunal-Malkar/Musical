@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   if (user && stream) {
     await Stream.findOneAndUpdate(
       { _id: stream._id },
-      { $addToSet: { upvotes: user._id } }
+      { $addToSet: { upvotes: user.email } }
     );
     return NextResponse.json(
       {

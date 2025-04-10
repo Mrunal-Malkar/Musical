@@ -9,25 +9,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { signIn, useSession } from "next-auth/react";
+import Loader from "../components/loader";
 
 const Zone = () => {
-  type stream = {
+  type streamType = {
     _id: string;
     url: string;
     title: string;
     imageUrl: string;
     creator: string;
-    upvotes: number;
+    upvotes: Array<string>;
     channelName: string;
     duration: string;
   };
 
-  const ytPlayerRef = useRef<any>(null);
+  const ytPlayerRef = useRef(null);
   const { data: session } = useSession();
-  const [streams, setStreams] = useState<stream[]>([]);
-  const [currentStream, setCurrentStream] = useState();
+  const [streams, setStreams] = useState<streamType[]>([]);
+  const [currentStream, setCurrentStream] = useState<streamType>();
   const [URL, setURL] = useState("");
   const [videoId, setVideoId] = useState<string>("");
+  const [streamsLoading, setStreamsLoading] = useState(false);
+  const [songAddLoading, setSongAddLoading] = useState(false);
+  const [currentNo, setCurrentNo] = useState(0);
 
   useEffect(() => {
     console.log("This is the url", URL);
@@ -42,6 +46,15 @@ const Zone = () => {
     }
   }, [URL]);
 
+  const playNext = () => {
+    console.log("function has been calles of playNExt");
+    const song = streams[currentNo + 1];
+    console.log("the song", streams);
+    setURL(song.url);
+    // setCurrentNo(currentNo+1);
+    // setCurrentStream(song);
+  };
+
   const YTPlayer = () => {
     if (!document.getElementById("yt-frame-api")) {
       const tag = document.createElement("script");
@@ -50,7 +63,6 @@ const Zone = () => {
       tag.src = "https://www.youtube.com/iframe_api";
       document.body.appendChild(tag);
     }
-    console.log("i am the player running with video id:", videoId);
 
     //@ts-ignore
     window.onYouTubeIframeAPIReady = function () {
@@ -65,7 +77,12 @@ const Zone = () => {
         events: {
           onStateChange: (event) => {
             if (event.data === 0) {
-              console.log("Video ended");
+              console.log("function has been calles of playNExt");
+              const song = streams[currentNo + 1];
+              console.log("the song", streams);
+              setURL(song.url);
+              // setCurrentNo(currentNo+1);
+              // setCurrentStream(song);
             }
           },
         },
@@ -82,6 +99,7 @@ const Zone = () => {
   }, [videoId]);
 
   const fetchStreams = async () => {
+    setStreamsLoading(true);
     const streams = await fetch("http://localhost:3000/api/stream", {
       method: "GET",
     });
@@ -89,16 +107,19 @@ const Zone = () => {
       const tracks = await streams.json();
       console.log(tracks.streams);
       if (streams != tracks.streams) {
+        setStreamsLoading(false);
         return setStreams(tracks.streams);
       } else {
+        setStreamsLoading(false);
         return null;
       }
     } else {
+      setStreamsLoading(false);
       return null;
     }
   };
 
-  const calculateLikes = (likes: number | Array<object>) => {
+  const calculateLikes = (likes: number | Array<string>) => {
     if (typeof likes === "number") {
       return likes;
     }
@@ -110,15 +131,21 @@ const Zone = () => {
   };
 
   const addSong = async () => {
+    if (songAddLoading) {
+      return null;
+    }
+    setSongAddLoading(true);
     if (!session?.user?.email) {
       toast.error("Please login to add songs to queue");
+      setSongAddLoading(false);
       return signIn();
     }
     const regex =
       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
     const match = URL.match(regex);
     if (!match) {
-      toast.error("incorrect url");
+      setSongAddLoading(false);
+      return toast.error("incorrect url");
     }
     await fetch("/api/stream/create", {
       method: "POST",
@@ -127,10 +154,16 @@ const Zone = () => {
       },
       body: JSON.stringify({ url: URL, userEmail: session?.user?.email }),
     });
+    setSongAddLoading(false);
     await fetchStreams();
   };
 
-  const addLike = async (id: string, user: string) => {
+  const checkLike = (streamUpvotes: Array<string>) => {
+    const userEmail = session?.user?.email;
+    return !!userEmail && streamUpvotes.includes(userEmail);
+  };
+
+  const Like = async (id: string, user: string) => {
     try {
       const response = await fetch("api/stream/upvote", {
         method: "POST",
@@ -145,6 +178,46 @@ const Zone = () => {
       } else {
         toast.error("error in upvoting the stream");
       }
+    } catch (err) {
+      toast.error(`error in upvoting the stream ${err}`);
+    }
+  };
+
+  const disLike = async (id: string, user: string) => {
+    try {
+      const response = await fetch("api/stream/downvote", {
+        method: "POST",
+        headers: {
+          content: "application/json",
+        },
+        body: JSON.stringify({
+          streamId: id,
+          userEmail: user,
+        }),
+      });
+      if (response.status == 200) {
+        toast.success("downvoted the stream sucessfully!");
+        fetchStreams();
+      } else {
+        toast.error("error in downvoting the stream");
+      }
+    } catch (err) {
+      toast.error(`error in downvoting the stream ${err}`);
+    }
+  };
+
+  const handleLike = async (id: string, user: string) => {
+    try {
+      streams.map((val) => {
+        if (val._id == id) {
+          const check = val.upvotes.includes(user);
+          if (check) {
+            Like(id, user);
+          } else {
+            disLike(id, user);
+          }
+        }
+      });
     } catch (err: unknown) {
       toast.error(`error in upvoting the stream:${err}`);
     }
@@ -166,39 +239,66 @@ const Zone = () => {
                 <h1>Currently playing</h1>
               </div>
               {currentStream ? (
-                <div className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[110px] backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between">
+                <div
+                  key={currentStream._id}
+                  className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
+                >
                   <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
                     <img
                       className="border border-gray-300"
-                      src={currentStream.thumbnail}
+                      src={currentStream.imageUrl}
                       width="240"
-                      height="60"
+                      height="50"
                       alt="YouTube video thumbnail"
                     />
                   </div>
-                  <div className="w-6/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col overflow-x-auto">
-                    <h1 className="text-center text-wrap flex-wrap flex justify-between w-full text-gray-200 text-lg md:text-xl">
-                      title caption <span className="sm:hidden block">|</span>
+                  <div className="w-6/12 md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
+                    <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto scroolbar-none ">
+                      {currentStream.title}
+                      <span className="sm:hidden block">|</span>
                       <span className="text-center text-md md:text-lg text-gray-400">
-                        title
+                        {currentStream.channelName}
                       </span>
                     </h1>
-                    <div className="w-full text-gray-200 flex justify-between">
-                      3:00min
+                  </div>
+                  <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
+                    <div className="text-gray-200 flex flex-col justify-center items-center">
+                      <p className="md:block hidden">
+                        {currentStream.duration}
+                      </p>
                       <div className="inline text-gray-200">
                         <FontAwesomeIcon
                           className="text-xl text-violet-500"
+                          onClick={() => {
+                            setCurrentStream(currentStream);
+                            setURL(currentStream.url);
+                          }}
                           icon={faPlay}
                         />
-                        Play
+                        <span className="md:blok hidden">Play</span>
                       </div>
                     </div>
-                  </div>
-                  <div className="justify-self-end">
-                    <FontAwesomeIcon
-                      className="text-2xl text-indigo-500"
-                      icon={faThumbsUp}
-                    />
+                    <div
+                      className="flex flex-col justify-center items-center"
+                      onClick={() => {
+                        handleLike(
+                          currentStream._id,
+                          session?.user?.email as string
+                        );
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        className={
+                          checkLike(currentStream.upvotes)
+                            ? "text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-600"
+                            : "text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-400"
+                        }
+                        icon={faThumbsUp}
+                      />
+                      <p className="text-gray-100">
+                        {calculateLikes(currentStream.upvotes)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -209,7 +309,11 @@ const Zone = () => {
               <div className="text-xl sm:text-2xl font-semibold tracking-tighter font-sans text-white m-2 mt-5">
                 Up Nexts-
               </div>
-              {streams.length >= 1 ? (
+              {streamsLoading ? (
+                <div className="w-full h-full flex justify-center align-middle">
+                  <Loader />
+                </div>
+              ) : streams.length >= 1 ? (
                 streams.map((val) => {
                   return (
                     <div
@@ -240,6 +344,10 @@ const Zone = () => {
                           <div className="inline text-gray-200">
                             <FontAwesomeIcon
                               className="text-xl text-violet-500"
+                              onClick={() => {
+                                setCurrentStream(val);
+                                setURL(val.url);
+                              }}
                               icon={faPlay}
                             />
                             <span className="md:blok hidden">Play</span>
@@ -248,7 +356,7 @@ const Zone = () => {
                         <div
                           className="flex flex-col justify-center items-center"
                           onClick={() => {
-                            addLike(val._id,session?.user?.email as string);
+                            handleLike(val._id, session?.user?.email as string);
                           }}
                         >
                           <FontAwesomeIcon
@@ -292,7 +400,11 @@ const Zone = () => {
                   />
                   <button
                     onClick={() => addSong()}
-                    className="bg-violet-600 rounded-md p-2 text-lg text-white"
+                    className={
+                      songAddLoading
+                        ? "bg-violet-400 rounded-md p-2 text-lg text-white"
+                        : "bg-violet-600 rounded-md p-2 text-lg text-white"
+                    }
                   >
                     Add to Queue
                   </button>

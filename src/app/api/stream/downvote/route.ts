@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
   const updateStream = await Stream.findOneAndUpdate(
     { _id: streamId },
-    { $pull:{upvotes: user._Id } }
+    { $pull:{upvotes: user.email } }
   );
   if (!updateStream) {
     return NextResponse.json(

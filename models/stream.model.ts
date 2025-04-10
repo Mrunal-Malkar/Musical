@@ -29,7 +29,10 @@ const streamSchema = new mongoose.Schema({
     type:String,
     required:false,
   },
-  upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  upvotes:{
+    type:Array,
+    default:[],
+  },
 });
 
 const Stream = mongoose.models.Stream || mongoose.model("Stream", streamSchema);
