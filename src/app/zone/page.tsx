@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { signIn, useSession } from "next-auth/react";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import Loader from "../components/loader";
 
 const Zone = () => {
@@ -27,11 +28,12 @@ const Zone = () => {
   const { data: session } = useSession();
   const [streams, setStreams] = useState<streamType[]>([]);
   const [currentStream, setCurrentStream] = useState<streamType>();
+  const [currentStreamLoading, setCurrentStreamLoading] = useState(false);
   const [URL, setURL] = useState("");
   const [videoId, setVideoId] = useState<string>("");
   const [streamsLoading, setStreamsLoading] = useState(false);
   const [songAddLoading, setSongAddLoading] = useState(false);
-  const [currentNo, setCurrentNo] = useState(0);
+  const [currentNo, setCurrentNo] = useState<number>(0);
 
   useEffect(() => {
     console.log("This is the url", URL);
@@ -46,13 +48,12 @@ const Zone = () => {
     }
   }, [URL]);
 
-  const playNext = () => {
+  const playNext = async() => {
     console.log("function has been calles of playNExt");
-    const song = streams[currentNo + 1];
-    console.log("the song", streams);
+    const song = await streams[currentNo + 1];
     setURL(song.url);
-    // setCurrentNo(currentNo+1);
-    // setCurrentStream(song);
+    setCurrentStream(song);
+    setCurrentNo(currentNo + 1);
   };
 
   const YTPlayer = () => {
@@ -76,13 +77,9 @@ const Zone = () => {
         videoId: videoId,
         events: {
           onStateChange: (event) => {
+            event.preventDefault();
             if (event.data === 0) {
-              console.log("function has been calles of playNExt");
-              const song = streams[currentNo + 1];
-              console.log("the song", streams);
-              setURL(song.url);
-              // setCurrentNo(currentNo+1);
-              // setCurrentStream(song);
+              playNext();
             }
           },
         },
@@ -99,6 +96,9 @@ const Zone = () => {
   }, [videoId]);
 
   const fetchStreams = async () => {
+    if (!currentStream) {
+      setCurrentStreamLoading(true);
+    }
     setStreamsLoading(true);
     const streams = await fetch("http://localhost:3000/api/stream", {
       method: "GET",
@@ -108,6 +108,11 @@ const Zone = () => {
       console.log(tracks.streams);
       if (streams != tracks.streams) {
         setStreamsLoading(false);
+        if (!currentStream) {
+          setCurrentStream(tracks.streams[0]);
+          setCurrentStreamLoading(false);
+          setURL(tracks.streams[0].url);
+        }
         return setStreams(tracks.streams);
       } else {
         setStreamsLoading(false);
@@ -211,10 +216,11 @@ const Zone = () => {
       streams.map((val) => {
         if (val._id == id) {
           const check = val.upvotes.includes(user);
+          console.log("this is the check:", check);
           if (check) {
-            Like(id, user);
-          } else {
             disLike(id, user);
+          } else {
+            Like(id, user);
           }
         }
       });
@@ -238,7 +244,11 @@ const Zone = () => {
               <div className="text-2xl sm:text-3xl m-2 md:text-4xl text-white font-bold font-sans">
                 <h1>Currently playing</h1>
               </div>
-              {currentStream ? (
+              {currentStreamLoading ? (
+                <div className="w-full h-full flex justify-center align-middle">
+                  <Loader />
+                </div>
+              ) : currentStream ? (
                 <div
                   key={currentStream._id}
                   className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
@@ -262,7 +272,7 @@ const Zone = () => {
                     </h1>
                   </div>
                   <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
-                    <div className="text-gray-200 flex flex-col justify-center items-center">
+                    <div className="text-gray-200 flex flex-col gap-y-2 justify-center items-center">
                       <p className="md:block hidden">
                         {currentStream.duration}
                       </p>
@@ -287,14 +297,13 @@ const Zone = () => {
                         );
                       }}
                     >
-                      <FontAwesomeIcon
+                      <i
                         className={
                           checkLike(currentStream.upvotes)
-                            ? "text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-600"
-                            : "text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-400"
+                            ? "bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
+                            : "bi bi-caret-up text-2xl bg-zinc-900 rounded-xl p-1 text-indigo-400"
                         }
-                        icon={faThumbsUp}
-                      />
+                      ></i>
                       <p className="text-gray-100">
                         {calculateLikes(currentStream.upvotes)}
                       </p>
@@ -359,10 +368,14 @@ const Zone = () => {
                             handleLike(val._id, session?.user?.email as string);
                           }}
                         >
-                          <FontAwesomeIcon
-                            className="text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
-                            icon={faThumbsUp}
-                          />
+                          <i
+                            className={
+                              checkLike(val.upvotes)
+                                ? "bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
+                                : "bi bi-caret-up text-2xl bg-zinc-900 rounded-xl p-1 text-indigo-400"
+                            }
+                          ></i>
+
                           <p className="text-gray-100">
                             {calculateLikes(val.upvotes)}
                           </p>
