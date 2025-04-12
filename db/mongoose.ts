@@ -7,7 +7,7 @@ const connectDB = async (): Promise<void> => {
       return;
     }
     await mongoose.connect(
-      "mongodb+srv://mrunalpmalkar:3Glv3ImipmA1IHx1@musical-cluster.hhc9iov.mongodb.net/"
+      `mongodb+srv://mrunalpmalkar:${process.env.MONGOOSE_PASSWORD}@musical-cluster.hhc9iov.mongodb.net/`
     );
     console.log("connected to DB");
   } catch (err) {

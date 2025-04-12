@@ -43,6 +43,15 @@ const Navbar = () => {
             World
           </span>
         </Link>
+        <Link href="/zone">
+          <span
+            className={
+              currentPath == "/zone" ? "text-indigo-400 scale-110" : "text-white"
+            }
+          >
+            Zone
+          </span>
+        </Link>
       </div>
 
       <div className="hidden md:block">
@@ -100,6 +109,18 @@ const Navbar = () => {
                 }
               >
                 World
+              </span>
+            </Link>
+            <Link
+              href="/zone"
+              className="p-3 hover:backdrop-blur-none bg-black"
+            >
+              <span
+                className={
+                  currentPath == "/zone" ? "text-indigo-400 scale-110" : "text-white"
+                }
+              >
+                Zone
               </span>
             </Link>
           </div>
