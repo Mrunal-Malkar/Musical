@@ -29,18 +29,18 @@ const Navbar = () => {
       <div className="font-semibold text-md sm:flex hidden justify-between items-center sm:gap-x-3">
         <Link href="/">
           <span
-            className={currentPath == "/" ? "text-white" : "text-indigo-400"}
+            className={currentPath == "/" ? "text-indigo-400 scale-110" : "text-white"}
           >
             Home
           </span>
         </Link>
-        <Link href="/zone">
+        <Link href="/world">
           <span
             className={
-              currentPath == "/zone" ? "text-white" : "text-indigo-400"
+              currentPath == "/world" ? "text-indigo-400 scale-110" : "text-white"
             }
           >
-            Zone
+            World
           </span>
         </Link>
       </div>
@@ -84,22 +84,22 @@ const Navbar = () => {
             <Link href="/" className="p-3 hover:backdrop-blur-none bg-black">
               <span
                 className={
-                  currentPath == "/" ? "text-white" : "text-indigo-400"
+                  currentPath == "/" ? "text-indigo-400 scale-110" : "text-white"
                 }
               >
                 Home
               </span>
             </Link>
             <Link
-              href="/zone"
+              href="/world"
               className="p-3 hover:backdrop-blur-none bg-black"
             >
               <span
                 className={
-                  currentPath == "/zone" ? "text-white" : "text-indigo-400"
+                  currentPath == "/world" ? "text-indigo-400 scale-110" : "text-white"
                 }
               >
-                zone
+                World
               </span>
             </Link>
           </div>

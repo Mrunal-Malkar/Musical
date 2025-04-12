@@ -41,7 +41,7 @@ export default function Home() {
             Listen according to Listeners
           </h1>
           <span className="w-[260px] sm:w-[460px] md:w-[560px] inline-block md:text-[19px] text-[15px] text-gray-300 sm:text-lg text-center backdrop-blur-2xl">
-            Discover YouTube music that's truly loved by the community. Upvoted
+            Discover YouTube music that&apos;s truly loved by the community. Upvoted
             by listeners, for listeners.
           </span>
           <div className="flex justify-center gap-y-3 sm:gap-x-4 align-middle flex-col sm:flex-row items-center font-[450]">

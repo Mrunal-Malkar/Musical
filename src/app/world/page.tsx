@@ -1,10 +1,6 @@
 "use client";
 import Navbar from "../components/navbar";
-import {
-  faPlay,
-  faShareNodes,
-  faThumbsUp,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faShareNodes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -52,14 +48,20 @@ const Zone = () => {
   }, [URL]);
 
   const playNext = async () => {
-
     const updatedExludes = [...excludedRef.current, currentStreamRef.current];
     //@ts-expect-error:for sure
+    console.log("this is the updated excludes", updatedExludes);
     setExcluded(updatedExludes);
     const availableStreams = streamsRef.current.filter((val) => {
-      return !updatedExludes.includes(val);
+      const filteredStream = updatedExludes.find((s) => {
+        if (!(s?.url == val.url)) {
+          return s;
+        }
+      });
+      return filteredStream;
     });
-    
+    console.log("this is the availableStreams", availableStreams);
+
     const nextStream = availableStreams.sort(
       (a, b) => b.upvotes.length - a.upvotes.length
     )[0];
@@ -74,7 +76,16 @@ const Zone = () => {
     streamsRef.current = streams;
     excludedRef.current = excluded;
     currentStreamRef.current = currentStream;
-  }, [streams,currentStream,excluded]);
+    if (
+      excluded.length > 0 &&
+      streams.some((e) => excluded.some((a) => a.url == e.url))
+    ) {
+      const filteredStreams = streams.filter((val) => {
+        return !excluded.some((e) => e.url === val.url);
+      });
+      setStreams(filteredStreams);
+    }
+  }, [streams, currentStream, excluded]);
 
   const YTPlayer = () => {
     if (!document.getElementById("yt-frame-api")) {
@@ -89,9 +100,6 @@ const Zone = () => {
     window.onYouTubeIframeAPIReady = function () {
       if (ytPlayerRef.current) {
         ytPlayerRef.current.destroy();
-      }
-      if (!videoId) {
-        toast.error("Please enter a valid URL");
       }
       //@ts-ignore
       ytPlayerRef.current = new window.YT.Player("ytPlayer", {
@@ -127,13 +135,26 @@ const Zone = () => {
     });
     if (streams.status == 200) {
       const tracks = await streams.json();
-      console.log(tracks.streams);
       if (streams != tracks.streams) {
         setStreamsLoading(false);
         if (!currentStream) {
-          setCurrentStream(tracks.streams[0]);
-          setCurrentStreamLoading(false);
-          setURL(tracks.streams[0].url);
+          console.log(
+            "entered in current stream this is tracks.streams",
+            tracks.streams
+          );
+          if (!excluded || excluded.length == 0) {
+            setCurrentStream(tracks.streams[0]);
+            setCurrentStreamLoading(false);
+            setURL(tracks.streams[0].url);
+          } else {
+            const filteredStreams = tracks.streams.filter((val: streamType) => {
+              return !excluded.some((e) => e.url == val.url);
+            });
+            console.log(`the filtered stream is ${filteredStreams}`);
+            setCurrentStream(filteredStreams[0]);
+            setCurrentStreamLoading(false);
+            setURL(filteredStreams[0].url);
+          }
         }
         return setStreams(tracks.streams);
       } else {
