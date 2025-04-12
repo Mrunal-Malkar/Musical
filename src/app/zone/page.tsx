@@ -27,13 +27,16 @@ const Zone = () => {
   const ytPlayerRef = useRef(null);
   const { data: session } = useSession();
   const [streams, setStreams] = useState<streamType[]>([]);
+  const streamsRef = useRef(streams);
   const [currentStream, setCurrentStream] = useState<streamType>();
+  const currentStreamRef = useRef(currentStream);
   const [currentStreamLoading, setCurrentStreamLoading] = useState(false);
-  const [URL, setURL] = useState("");
+  const [URL, setURL] = useState(currentStream?.url || "");
   const [videoId, setVideoId] = useState<string>("");
   const [streamsLoading, setStreamsLoading] = useState(false);
   const [songAddLoading, setSongAddLoading] = useState(false);
-  const [currentNo, setCurrentNo] = useState<number>(0);
+  const [excluded, setExcluded] = useState<Array<streamType>>([]);
+  const excludedRef = useRef(excluded);
 
   useEffect(() => {
     console.log("This is the url", URL);
@@ -48,13 +51,30 @@ const Zone = () => {
     }
   }, [URL]);
 
-  const playNext = async() => {
-    console.log("function has been calles of playNExt");
-    const song = await streams[currentNo + 1];
-    setURL(song.url);
-    setCurrentStream(song);
-    setCurrentNo(currentNo + 1);
+  const playNext = async () => {
+
+    const updatedExludes = [...excludedRef.current, currentStreamRef.current];
+    //@ts-expect-error:for sure
+    setExcluded(updatedExludes);
+    const availableStreams = streamsRef.current.filter((val) => {
+      return !updatedExludes.includes(val);
+    });
+    
+    const nextStream = availableStreams.sort(
+      (a, b) => b.upvotes.length - a.upvotes.length
+    )[0];
+
+    if (nextStream) {
+      setURL(nextStream.url);
+      setCurrentStream(nextStream);
+    }
   };
+
+  useEffect(() => {
+    streamsRef.current = streams;
+    excludedRef.current = excluded;
+    currentStreamRef.current = currentStream;
+  }, [streams,currentStream,excluded]);
 
   const YTPlayer = () => {
     if (!document.getElementById("yt-frame-api")) {
@@ -70,6 +90,9 @@ const Zone = () => {
       if (ytPlayerRef.current) {
         ytPlayerRef.current.destroy();
       }
+      if (!videoId) {
+        toast.error("Please enter a valid URL");
+      }
       //@ts-ignore
       ytPlayerRef.current = new window.YT.Player("ytPlayer", {
         height: "390",
@@ -77,7 +100,6 @@ const Zone = () => {
         videoId: videoId,
         events: {
           onStateChange: (event) => {
-            event.preventDefault();
             if (event.data === 0) {
               playNext();
             }
