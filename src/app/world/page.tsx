@@ -144,6 +144,7 @@ const World = () => {
             tracks.streams
           );
           if (!excluded || excluded.length == 0) {
+            console.log("this is the tracks for world",tracks);
             setCurrentStream(tracks.streams[0]);
             setCurrentStreamLoading(false);
             setURL(tracks.streams[0].url);

@@ -20,9 +20,9 @@ const Zone = () => {
     upvotes: Array<string>;
     channelName: string;
     duration: string;
-    zone:string;
+    zone: string;
   };
-  const router=useRouter();
+  const router = useRouter();
   const ytPlayerRef = useRef(null);
   const { data: session } = useSession();
   const [streams, setStreams] = useState<streamType[]>([]);
@@ -91,33 +91,35 @@ const Zone = () => {
   }, [streams, currentStream, excluded]);
 
   const YTPlayer = () => {
-    if (!document.getElementById("yt-frame-api")) {
-      const tag = document.createElement("script");
-      //@ts-ignore
-      tag.id = "yt-frame-api";
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag);
-    }
-
-    //@ts-ignore
-    window.onYouTubeIframeAPIReady = function () {
-      if (ytPlayerRef.current) {
-        ytPlayerRef.current.destroy();
+    setTimeout(()=>{
+      if (!document.getElementById("yt-frame-api")) {
+        const tag = document.createElement("script");
+        // id could not exist
+        tag.id = "yt-frame-api";
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
+  
+        //@ts-ignore
+        window.onYouTubeIframeAPIReady = function () {
+          if (ytPlayerRef.current) {
+            ytPlayerRef.current.destroy();
+          }
+          //@ts-ignore
+          ytPlayerRef.current = new window.YT.Player("ytPLAYER", {
+            height: "390",
+            width: "640",
+            videoId: videoId,
+            events: {
+              onStateChange: (event: { data }) => {
+                if (event.data === 0) {
+                  playNext();
+                }
+              },
+            },
+          });
+        };
       }
-      //@ts-ignore
-      ytPlayerRef.current = new window.YT.Player("ytPlayer", {
-        height: "390",
-        width: "640",
-        videoId: videoId,
-        events: {
-          onStateChange: (event: { data }) => {
-            if (event.data === 0) {
-              playNext();
-            }
-          },
-        },
-      });
-    };
+    })
   };
 
   useEffect(() => {
@@ -130,22 +132,27 @@ const Zone = () => {
 
   const fetchStreams = async () => {
     setStreamsLoading(true);
-    const zoneId=localStorage.getItem("zoneId");
-    if(!zoneId){
+    const zoneId = localStorage.getItem("zoneId");
+    if (!zoneId) {
       router.push("/zoneId");
     }
-    const streams = await fetch(`http://localhost:3000/api/stream/zonestream/${zoneId}`, {
-      method: "POST",
-    });
+    const streams = await fetch(
+      `http://localhost:3000/api/stream/zonestream/${zoneId}`,
+      {
+        method: "POST",
+      }
+    );
     if (streams.status == 200) {
       const tracks = await streams.json();
       if (streams != tracks.streams) {
         setStreamsLoading(false);
         if (!currentStream) {
           if (!excluded || excluded.length == 0) {
+            console.log("this is tracks:", tracks);
             setCurrentStream(tracks.streams[0]);
             setCurrentStreamLoading(false);
             setURL(tracks.streams[0].url);
+            console.log("this is tracks:", tracks);
           } else {
             setCurrentStreamLoading(false);
             const filteredStreams = tracks.streams.filter((val: streamType) => {
@@ -155,6 +162,7 @@ const Zone = () => {
             setCurrentStream(filteredStreams[0]);
             setCurrentStreamLoading(false);
             setURL(filteredStreams[0].url);
+            console.log("this is tracks:", tracks);
           }
         }
         return setStreams(tracks.streams);
@@ -181,7 +189,7 @@ const Zone = () => {
   };
 
   const addSong = async () => {
-    const zoneId=localStorage.getItem("zoneId")
+    const zoneId = localStorage.getItem("zoneId");
     if (songAddLoading || !zoneId) {
       return null;
     }
@@ -203,7 +211,11 @@ const Zone = () => {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({ url: URL, userEmail: session?.user?.email,zoneId }),
+      body: JSON.stringify({
+        url: URL,
+        userEmail: session?.user?.email,
+        zoneId: zoneId,
+      }),
     });
     setSongAddLoading(false);
     await fetchStreams();
@@ -283,6 +295,7 @@ const Zone = () => {
     <ZoneIdProtector>
       <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <Navbar />
+        <button onClick={()=>{playNext()}}>ff</button>
         <ToastContainer />
         <div className="w-full flex md:flex-row flex-col justify-center align-middle">
           <div className="xl:pt-25 xl:pe-25 xl:ps-25 xl:w-11/12 w-full flex xl:flex-row flex-col-reverse items-center justify-center align-middle">
@@ -478,7 +491,7 @@ const Zone = () => {
                 <div className="p-2 bg-gray-700 rounded-md md:h-56 h-48 w-full max-w-80 md:w-96 md:m-2 flex justify-center align-middle items-center">
                   <div
                     className="w-full flex justify-center align-middle items-center h-full"
-                    id="ytPlayer"
+                    id="ytPLAYER"
                   ></div>
                 </div>
                 <button className="px-4 gap-x-2 text-gray-300 flex justify-center items-center m-2 w-10/12 sm:w-6/12 md:w-4/12 p-2 bg-violet-700">
@@ -493,5 +506,4 @@ const Zone = () => {
     </ZoneIdProtector>
   );
 };
-
 export default Zone;

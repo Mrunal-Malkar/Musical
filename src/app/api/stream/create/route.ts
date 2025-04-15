@@ -4,10 +4,8 @@ import connectDB from "../../../../../db/mongoose";
 
 export async function POST(req: NextRequest) {
   try {
-    const { url, userEmail } = await req.json();
-    const { zoneId } = await req.json();
-    console.log("user email is", userEmail);
-    console.log("url is", url);
+    const { url, userEmail,zoneId } = await req.json();
+    console.log("url is", zoneId);
     const regex =
       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
     const match = url.match(regex);
