@@ -33,6 +33,9 @@ const streamSchema = new mongoose.Schema({
     type:Array,
     default:[],
   },
+  zone:{
+    type:String,
+  }
 });
 
 const Stream = mongoose.models.Stream || mongoose.model("Stream", streamSchema);

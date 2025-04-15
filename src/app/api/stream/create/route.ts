@@ -4,12 +4,13 @@ import connectDB from "../../../../../db/mongoose";
 
 export async function POST(req: NextRequest) {
   try {
-    const { url,userEmail } = await req.json();
-    console.log("user email is",userEmail)
-    console.log("url is",url)
+    const { url, userEmail } = await req.json();
+    const { zoneId } = await req.json();
+    console.log("user email is", userEmail);
+    console.log("url is", url);
     const regex =
-    /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
-  const match = url.match(regex);
+      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
+    const match = url.match(regex);
 
     if (!match || !userEmail) {
       console.log("not a valid youtube url");
@@ -27,9 +28,9 @@ export async function POST(req: NextRequest) {
     );
     const ytData = await requestingYtApi.json();
     const title = ytData.items[0].snippet.title;
-    const channelName=ytData.items[0].snippet.channelTittle;
+    const channelName = ytData.items[0].snippet.channelTittle;
     const imgUrl = ytData.items[0].snippet.thumbnails.default.url;
-    const videoDuration=ytData.items[0].contentDetails.duration;
+    const videoDuration = ytData.items[0].contentDetails.duration;
 
     if (url && imgUrl && title) {
       const findStream = await Stream.findOne({ url: url });
@@ -43,26 +44,41 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      function convertDuration(iso:string) {
+      function convertDuration(iso: string) {
         const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-        const h = parseInt(match?.[1] || '0');
-        const m = parseInt(match?.[2] || '0');
-        const s = parseInt(match?.[3] || '0');
-      
-        if (h) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        else return `${m}:${String(s).padStart(2, '0')}`;
+        const h = parseInt(match?.[1] || "0");
+        const m = parseInt(match?.[2] || "0");
+        const s = parseInt(match?.[3] || "0");
+
+        if (h)
+          return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(
+            2,
+            "0"
+          )}`;
+        else return `${m}:${String(s).padStart(2, "0")}`;
       }
 
-      const duration=convertDuration(videoDuration);
-
-      await Stream.create({
-        url: url,
-        imageUrl: imgUrl,
-        duration:duration,
-        creator:userEmail,
-        title: title,
-        channelName:channelName,
-      });
+      const duration = convertDuration(videoDuration);
+      if (!zoneId) {
+        await Stream.create({
+          url: url,
+          imageUrl: imgUrl,
+          duration: duration,
+          creator: userEmail,
+          title: title,
+          channelName: channelName,
+        });
+      } else {
+        await Stream.create({
+          url: url,
+          imageUrl: imgUrl,
+          duration: duration,
+          creator: userEmail,
+          title: title,
+          channelName: channelName,
+          zone: zoneId,
+        });
+      }
       return NextResponse.json(
         {
           message: "Succesfully created a stream",

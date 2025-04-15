@@ -8,7 +8,7 @@ import { signIn, useSession } from "next-auth/react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Loader from "../components/loader";
 
-const Zone = () => {
+const World = () => {
   type streamType = {
     _id: string;
     url: string;
@@ -18,6 +18,7 @@ const Zone = () => {
     upvotes: Array<string>;
     channelName: string;
     duration: string;
+    zone:string;
   };
 
   const ytPlayerRef = useRef(null);
@@ -491,4 +492,4 @@ const Zone = () => {
   );
 };
 
-export default Zone;
+export default World;

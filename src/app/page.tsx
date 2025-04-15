@@ -1,5 +1,6 @@
 "use client"
 import Navbar from "./components/navbar";
+import { motion } from "motion/react"
 import {
   faArrowTrendUp,
   faHeadphones,
@@ -24,6 +25,21 @@ export default function Home() {
     } 
   }
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+  
+  const item = {
+    hidden: { opacity: 0, y: 40 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+  };
+
   const Songs=[
     {index:1},
     {index:2},
@@ -36,28 +52,41 @@ export default function Home() {
     <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-800 to-slate-900">
       <Navbar />
       <div className="w-full flex flex-col align-middle items-center justify-center">
-        <div className="flex flex-col my-26 sm:my-40 w-full lign-middle items-center justify-center gap-y-3 align-middle">
-          <h1 className="md:text-6xl sm:text-6xl text-4xl w-full bg-gradient-to-r text-transparent bg-clip-text from-violet-600 via-indigo-600 font-bold to-blue-500 text-center">
-            Listen according to Listeners
-          </h1>
-          <span className="w-[260px] sm:w-[460px] md:w-[560px] inline-block md:text-[19px] text-[15px] text-gray-300 sm:text-lg text-center backdrop-blur-2xl">
-            Discover YouTube music that&apos;s truly loved by the community. Upvoted
-            by listeners, for listeners.
-          </span>
-          <div className="flex justify-center gap-y-3 sm:gap-x-4 align-middle flex-col sm:flex-row items-center font-[450]">
-            <button className="p-2 px-4  bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110">
-              <FontAwesomeIcon icon={faPlay} className="text-gray-300" />
-              Start Listening
-            </button>
-            <button className="p-2 px-4 border-[1px] border-violet-500  bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md  gap-x-2 text-violet-600 hover:to-white hover:scale-110">
-              <FontAwesomeIcon
-                icon={faArrowTrendUp}
-                className="text-violet-600"
-              />
-              View Trending
-            </button>
-          </div>
-        </div>
+      <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="flex flex-col my-26 sm:my-40 w-full items-center justify-center gap-y-3"
+    >
+      <motion.div
+        variants={item}
+        className="md:text-6xl sm:text-6xl text-4xl w-full bg-gradient-to-r text-transparent bg-clip-text from-violet-600 via-indigo-600 font-bold to-blue-500 text-center"
+      >
+        Listen according to Listeners
+      </motion.div>
+
+      <motion.span
+        variants={item}
+        className="w-[260px] sm:w-[460px] md:w-[560px] inline-block md:text-[19px] text-[15px] text-gray-300 sm:text-lg text-center backdrop-blur-2xl"
+      >
+        Discover YouTube music that&apos;s truly loved by the community. Upvoted
+        by listeners, for listeners.
+      </motion.span>
+
+      <motion.div
+        variants={item}
+        className="flex justify-center gap-y-3 sm:gap-x-4 flex-col sm:flex-row items-center font-[450]"
+      >
+        <button className="p-2 px-4 bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110 transition-all">
+          <FontAwesomeIcon icon={faPlay} className="text-gray-300" />
+          Start Listening
+        </button>
+        <button className="p-2 px-4 border-[1px] border-violet-500 bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md gap-x-2 text-violet-600 hover:to-white hover:scale-110 transition-all">
+          <FontAwesomeIcon icon={faArrowTrendUp} className="text-violet-600" />
+          View Trending
+        </button>
+      </motion.div>
+    </motion.div>
         <div className="flex flex-col justify-center align-middle items-center pt-5 sm:pt-30 w-full">
           <div className="flex flex-col justify-center align-middle items-center">
             <div className=" flex flex-col gap-x-3 gap-y-1">
