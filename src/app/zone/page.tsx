@@ -9,6 +9,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import Loader from "../components/loader";
 import ZoneIdProtector from "../utils/idProtector";
 import { useRouter } from "next/navigation";
+import YouTubePlayer from "../components/player.lib";
 
 const Zone = () => {
   type streamType = {
@@ -90,43 +91,42 @@ const Zone = () => {
     }
   }, [streams, currentStream, excluded]);
 
-  const YTPlayer = () => {
-    if (!document.getElementById("yt-frame-api")) {
-        const tag = document.createElement("script");
-        // id could not exist
-        tag.id = "yt-frame-api";
-        tag.src = "https://www.youtube.com/iframe_api";
-        document.body.appendChild(tag);
+  // const YTPlayer = () => {
+  //   if (!document.getElementById("yt-frame-api")) {
+  //       const tag = document.createElement("script");
+  //       // id could not exist
+  //       tag.id = "yt-frame-api";
+  //       tag.src = "https://www.youtube.com/iframe_api";
+  //       document.body.appendChild(tag);}
   
-        //@ts-ignore
-        window.onYouTubeIframeAPIReady = function () {
-          if (ytPlayerRef.current) {
-            ytPlayerRef.current.destroy();
-          }
-          //@ts-ignore
-          ytPlayerRef.current = new window.YT.Player("ytPLAYER", {
-            height: "390",
-            width: "640",
-            videoId: videoId,
-            events: {
-              onStateChange: (event: { data }) => {
-                if (event.data === 0) {
-                  playNext();
-                }
-              },
-            },
-          });
-        };
-      }
-  };
+  //       //@ts-ignore
+  //       window.onYouTubeIframeAPIReady = function () {
+  //         if (ytPlayerRef.current) {
+  //           ytPlayerRef.current.destroy();
+  //         }
+  //         //@ts-ignore
+  //         ytPlayerRef.current = new window.YT.Player("ytPLAYER", {
+  //           height: "390",
+  //           width: "640",
+  //           videoId: videoId,
+  //           events: {
+  //             onStateChange: (event: { data }) => {
+  //               if (event.data === 0) {
+  //                 playNext();
+  //               }
+  //             },
+  //           },
+  //         });
+  //     }
+  // };
 
-  useEffect(() => {
-    if (ytPlayerRef.current && ytPlayerRef.current.loadVideoById) {
-      ytPlayerRef.current.loadVideoById(videoId);
-    } else {
-      YTPlayer();
-    }
-  }, [videoId]);
+  // useEffect(() => {
+  //   if (ytPlayerRef.current && ytPlayerRef.current.loadVideoById) {
+  //     ytPlayerRef.current.loadVideoById(videoId);
+  //   } else {
+  //     YTPlayer();
+  //   }
+  // }, [videoId]);
 
   const fetchStreams = async () => {
     setStreamsLoading(true);
@@ -487,10 +487,7 @@ const Zone = () => {
                   </h1>
                 </div>
                 <div className="p-2 bg-gray-700 rounded-md md:h-56 h-48 w-full max-w-80 md:w-96 md:m-2 flex justify-center align-middle items-center">
-                  <div
-                    className="w-full flex justify-center align-middle items-center h-full"
-                    id="ytPLAYER"
-                  ></div>
+                  <YouTubePlayer videoId={videoId} playNext={playNext} />
                 </div>
                 <button className="px-4 gap-x-2 text-gray-300 flex justify-center items-center m-2 w-10/12 sm:w-6/12 md:w-4/12 p-2 bg-violet-700">
                   <FontAwesomeIcon className="text-xl" icon={faPlay} />
