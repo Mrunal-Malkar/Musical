@@ -91,8 +91,7 @@ const Zone = () => {
   }, [streams, currentStream, excluded]);
 
   const YTPlayer = () => {
-    setTimeout(()=>{
-      if (!document.getElementById("yt-frame-api")) {
+    if (!document.getElementById("yt-frame-api")) {
         const tag = document.createElement("script");
         // id could not exist
         tag.id = "yt-frame-api";
@@ -119,7 +118,6 @@ const Zone = () => {
           });
         };
       }
-    })
   };
 
   useEffect(() => {
