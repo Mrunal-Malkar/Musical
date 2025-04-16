@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🎵 Musical
 
-## Getting Started
 
-First, run the development server:
+Musical is a full-stack music-sharing web app built with Next.js, designed to create a social and collaborative space for discovering, sharing, and voting on YouTube music streams. It features two main interactive environments: World and Zone.
 
-```bash
-npm run dev
+🌍 World
+
+The World page is a global feed showcasing all YouTube music streams shared by users across the platform.
+
+Key Features:
+
+-🔊 Discover music shared by users globally
+
+-👍 Upvote your favorite streams to boost their visibility
+
+-🌟 Top-voted tracks rise on the leaderboard
+
+-🚀 One-click play and real-time updates
+
+
+🌐 Zone
+
+The Zone is a private room-like environment, where users can form or join custom music-sharing spaces.
+
+
+Key Features:
+
+-🔑 Join or create your own "Zone" with a name
+
+-🎓 Add and upvote tracks collaboratively
+
+-💬 Perfect for friend groups or music communities
+
+-✨ Clean, real-time experience exclusive to your group
+
+
+🚀 Tech Stack
+
+-Frontend: Next.js, Tailwind CSS
+
+-Backend: Next.js API Routes.
+
+-Database: MongoDB
+
+-Authentication: NextAuth.js
+
+-State Management: React Context / Hooks
+
+-Styling: TailwindCSS, FontAwesome Icons
+
+
+
+⚙️ Installation
+
+-Clone the repo:
+
+git clone https://github.com/your-username/musical.git
+
+cd musical
+
+
+Install dependencies:
+
+yarn install
+
 # or
+
+npm install
+
+Setup environment variables:
+
+
+Create a .env.local file and add necessary credentials (YouTube API keys, Auth providers, etc.)
+
+GOOGLE_CLIENT_ID=
+
+GOOGLE_CLIENT_SECRET=
+
+NEXTAUTH_SECRET=
+
+NEXTAUTH_URL=
+
+YOUTUBE_API_KEY=
+
+MONGOOSE_PASSWORD=
+
+
+Run the app locally:
+
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+  # or
+  npm run dev
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🔧 Features Overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+✨ Future Plans
 
-To learn more about Next.js, take a look at the following resources:
+-🌐 Global chat for music discussions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-🔥 Real-time sync playback in Zone
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+-🔍 Improved search and filtering
 
-## Deploy on Vercel
+🙏 Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+We welcome contributions! Feel free to open issues or pull requests. For major changes, please open an issue first to discuss what you'd like to change.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+✉️ License
+
+MIT License. Feel free to use, modify, and distribute with credit.
+
+
+Made with ♥ by the MRUNAL.
