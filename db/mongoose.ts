@@ -13,7 +13,9 @@ const connectDB = async (): Promise<void> => {
   } catch (err) {
     const error:string=(`error occured while trying to connect to DB: ${err}`);
     console.log(error);
-    throw new Error(error);
+    setTimeout(()=>{
+      connectDB();
+    },5000)
   }
 };
 

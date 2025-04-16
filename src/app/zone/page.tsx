@@ -253,6 +253,21 @@ const Zone = () => {
     }
   };
 
+  function share() {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Check out this music stream!",
+          text: "I found this awesome stream on Musical 🎶",
+          url: currentStream?.url,
+        })
+        .then(() => console.log("Shared successfully!"))
+        .catch((error) => console.error("Error sharing:", error));
+    } else {
+      alert("Sharing not supported on this browser.");
+    }
+  }
+
   useEffect(() => {
     fetchStreams();
     const interval = setInterval(() => {
@@ -441,7 +456,10 @@ const Zone = () => {
                     <h1 className="font-bold p-1 text-white text-2xl">
                       Add a song
                     </h1>
-                    <button className="p-2 text-lg cursor-pointer justify-center align-middle items-center gap-x-1 bg-violet-600 text-gray-200 flex px-4 rounded-sm">
+                    <button
+                      onClick={share}
+                      className="p-2 text-lg cursor-pointer justify-center align-middle items-center gap-x-1 bg-violet-600 text-gray-200 flex px-4 rounded-sm"
+                    >
                       <FontAwesomeIcon
                         icon={faShareNodes}
                         className="font-extralight"

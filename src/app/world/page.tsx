@@ -19,7 +19,7 @@ const World = () => {
     upvotes: Array<string>;
     channelName: string;
     duration: string;
-    zone:string;
+    zone: string;
   };
 
   const { data: session } = useSession();
@@ -106,7 +106,7 @@ const World = () => {
             tracks.streams
           );
           if (!excluded || excluded.length == 0) {
-            console.log("this is the tracks for world",tracks);
+            console.log("this is the tracks for world", tracks);
             setCurrentStream(tracks.streams[0]);
             setCurrentStreamLoading(false);
             setURL(tracks.streams[0].url);
@@ -218,6 +218,21 @@ const World = () => {
     }
   };
 
+  function share() {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Check out this music stream!",
+          text: "I found this awesome stream on Musical 🎶",
+          url: currentStream?.url,
+        })
+        .then(() => console.log("Shared successfully!"))
+        .catch((error) => console.error("Error sharing:", error));
+    } else {
+      alert("Sharing not supported on this browser.");
+    }
+  }
+
   const handleLike = async (id: string, user: string) => {
     try {
       streams.map((val) => {
@@ -236,15 +251,15 @@ const World = () => {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
+    fetchStreams();
+    const interval = setInterval(() => {
       fetchStreams();
-      const interval=setInterval(()=>{
-        fetchStreams();
-      },60000)
-  
-      return ()=>clearInterval(interval);
-    }, []);
-  
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -408,7 +423,10 @@ const World = () => {
                   <h1 className="font-bold p-1 text-white text-2xl">
                     Add a song
                   </h1>
-                  <button className="p-2 text-lg justify-center align-middle items-center gap-x-1 bg-violet-600 text-gray-200 flex px-4 rounded-sm">
+                  <button
+                    onClick={share}
+                    className="p-2 text-lg justify-center cursor-pointer align-middle items-center gap-x-1 bg-violet-600 text-gray-200 flex px-4 rounded-sm"
+                  >
                     <FontAwesomeIcon
                       icon={faShareNodes}
                       className="font-extralight"
@@ -442,7 +460,7 @@ const World = () => {
                   </h1>
                 </div>
                 <div className="p-2 bg-gray-700 rounded-md md:h-56 h-48 w-full max-w-80 md:w-96 md:m-2 flex justify-center align-middle items-center">
-                <YouTubePlayer videoId={videoId} playNext={playNext} />
+                  <YouTubePlayer videoId={videoId} playNext={playNext} />
                 </div>
                 <button className="px-4 gap-x-2 text-gray-300 flex justify-center items-center m-2 w-10/12 sm:w-6/12 md:w-4/12 p-2 bg-violet-700">
                   <FontAwesomeIcon className="text-xl" icon={faPlay} />
