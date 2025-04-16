@@ -267,6 +267,11 @@ const Zone = () => {
     }
   };
 
+const leaveZone=()=>{
+  localStorage.removeItem("zoneId");
+  toast.success("you have left the zone!");
+}
+
   const handleLike = async (id: string, user: string) => {
     try {
       streams.map((val) => {
@@ -294,8 +299,13 @@ const Zone = () => {
       <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <Navbar />
         <ToastContainer />
-        <div className="p-2 bg-gradient-to-tr text-xl font-mono text-gray-300 from-indigo-600 w-full to-violet-500 m-1 flex align-middle text-center justify-between">
-          Current Zone = {typeof window !== "undefined" && localStorage.getItem("zoneId")}    
+        <div className="p-2 bg-gradient-to-tr text-xl font-mono text-gray-300 items-center from-indigo-600 to-violet-500 m-1 flex align-middle text-center justify-around">
+          <div>
+            Current Zone = {typeof window !== "undefined" && localStorage.getItem("zoneId")}    
+            </div>
+            <button onClick={leaveZone} className="bg-indigo-700 cursor-pointer text-gray-300 p-1 font-serif text-md">
+              Leave Zone?
+            </button>
         </div>
         <div className="w-full flex md:flex-row flex-col justify-center align-middle">
           <div className="xl:pt-25 xl:pe-25 xl:ps-25 xl:w-11/12 w-full flex xl:flex-row flex-col-reverse items-center justify-center align-middle">
@@ -455,7 +465,7 @@ const Zone = () => {
                   <h1 className="font-bold p-1 text-white text-2xl">
                     Add a song
                   </h1>
-                  <button className="p-2 text-lg justify-center align-middle items-center gap-x-1 bg-violet-600 text-gray-200 flex px-4 rounded-sm">
+                  <button className="p-2 text-lg cursor-pointer justify-center align-middle items-center gap-x-1 bg-violet-600 text-gray-200 flex px-4 rounded-sm">
                     <FontAwesomeIcon
                       icon={faShareNodes}
                       className="font-extralight"

@@ -57,7 +57,7 @@ const Navbar = () => {
       <div className="hidden md:block">
         <button
           onClick={() => (status == "authenticated" ? signOut() : signIn())}
-          className="bg-gradient-to-br from-violet-700 to-violet-900 text-white md:p-3 rounded-lg font-mono"
+          className="bg-gradient-to-br cursor-pointer from-violet-700 to-violet-900 text-white md:p-3 rounded-lg font-mono"
         >
           {status == "authenticated" ? <h1>Log-Out</h1> : <h1>Sign-In</h1>}
         </button>
@@ -75,7 +75,7 @@ const Navbar = () => {
       <div className="sm:hidden flex gap-x-1">
         <button
           onClick={() => (status == "authenticated" ? signOut() : signIn())}
-          className=" bg-gradient-to-br from-violet-700 to-violet-900 text-white p-1 px-1.5 text-sm font-semibold rounded-lg font-mono"
+          className=" bg-gradient-to-br cursor-pointer from-violet-700 to-violet-900 text-white p-1 px-1.5 text-sm font-semibold rounded-lg font-mono"
         >
           {status == "authenticated" ? <h1>Log-Out</h1> : <h1>Sign-In</h1>}
         </button>

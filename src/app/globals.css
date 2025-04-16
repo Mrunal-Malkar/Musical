@@ -23,6 +23,24 @@
   }
 }
 
+/* globals.css */
+@layer utilities {
+  .thin-scrollbar::-webkit-scrollbar {
+    height: 4px; /* horizontal scrollbar */
+    width: 4px;  /* vertical scrollbar */
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb {
+    background-color:#171717; /* customize as needed */
+    border-radius: 9999px;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-track {
+    background: gray;
+  }
+}
+
+
 body {
   background: var(--background);
   color: var(--foreground);

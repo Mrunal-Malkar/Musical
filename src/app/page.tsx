@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "./components/navbar";
-import { motion } from "motion/react";
+import { motion, px } from "motion/react";
 import {
   faArrowTrendUp,
   faHeadphones,
@@ -161,7 +161,7 @@ export default function Home() {
                         alt="YouTube video thumbnail"
                       />
                     </div>
-                    <div className="w-2/6 h-full flex font-medium font-sans justify-center items-start p-1 flex-col overflow-y-auto">
+                    <div className="w-2/6 h-full thin-scrollbar flex font-medium font-sans justify-center items-start p-1 flex-col overflow-y-auto">
                       <h1 className="text-center text-gray-200 text-lg md:text-xl">
                         {val.title}
                       </h1>
@@ -256,6 +256,81 @@ export default function Home() {
             </div>
           </div>
         </div>
+        {/* end of first card */}
+        <div className="mt-16 sm:p-34 p-14 w-full md:flex-row flex-col-reverse flex justify-start align-middle text-gray-300 bg-gradient-to-tr from-slate-800 to-slate-900 ">
+          <div className="flex flex-1 justify-center md:w-1/2 w-full">
+            <div className="md:h-96 h-80 md:m-0 mb-5 w-96 bg-gradient-to-tr items-center flex-col from-blue-700 to-green-700 flex justify-center align-middle">
+              <img src="earth-globe.png" className="w-3/4 h-3/4" alt="" />
+            </div>
+          </div>
+          <div className="flex flex-col md:w-1/2 w-full flex-2">
+            <h1 className="text-4xl pb-3 font-bold md:text-5xl text-transparent bg-gradient-to-r from-violet-800 to-indigo-900 bg-clip-text">
+              Welcome to the World -Discover what it is?
+            </h1>
+            <h2 className="text-xl mb-6 md:p-1 md:text-2xl text-gray-300">
+              Explore community-shared music
+            </h2>
+            <ul className="flex flex-col gap-y-6 sm:gap-y-4 font-bold">
+              <li className="flex justify-start gap-2 align-middle items-center">
+                <button className="w-10 h-10 rounded-3xl bg-indigo-600 p-4 flex items-center justify-center text-2xl">
+                  1
+                </button>
+                Discover a global feed of YouTube music streams shared by
+                everyone
+              </li>
+              <li className="flex justify-start gap-2 align-middle items-center">
+                <button className="w-10 h-10 rounded-3xl bg-indigo-600 p-4 flex items-center justify-center text-2xl">
+                  2
+                </button>
+                Like and upvote your favorite songs to push them up the
+                leaderboard
+              </li>
+              <li className="flex justify-start gap-2 align-middle items-center">
+                <button className="w-10 h-10 rounded-3xl bg-indigo-600 p-4 flex items-center justify-center text-2xl">
+                  3
+                </button>
+                Make your music picks heard AND contribute to the global jam
+                session
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* end of 2nd card */}
+        <div className="mt-16 sm:p-34 p-14 w-full md:flex-row flex-col-reverse flex justify-start align-middle text-gray-300 bg-gradient-to-tr from-slate-800 to-slate-900 ">
+          <div className="flex flex-col md:w-1/2 w-full flex-2">
+            <h1 className="text-4xl pb-3 font-bold md:text-5xl text-transparent bg-gradient-to-r from-violet-800 to-indigo-900 bg-clip-text">
+            Dive into a Zone -Discover what it is?
+            </h1>
+            <h2 className="text-xl mb-6 md:p-1 md:text-2xl text-gray-300">
+            Your own private music space
+            </h2>
+            <ul className="flex flex-col gap-y-6 sm:gap-y-4 font-bold">
+              <li className="flex justify-start gap-2 align-middle items-center">
+                <button className="w-10 h-10 rounded-3xl bg-indigo-600 p-4 flex items-center justify-center text-2xl">
+                  1
+                </button>
+                Create or join a private zone — a room just for your group
+                </li>
+              <li className="flex justify-start gap-2 align-middle items-center">
+                <button className="w-10 h-10 rounded-3xl bg-indigo-600 p-4 flex items-center justify-center text-2xl">
+                  2
+                </button>
+                Add YouTube music streams together and enjoy collaborative playlists              </li>
+              <li className="flex justify-start gap-2 align-middle items-center">
+                <button className="w-10 h-10 rounded-3xl bg-indigo-600 p-4 flex items-center justify-center text-2xl">
+                  3
+                </button>
+                Upvote songs within your zone to set the group vibe              </li>
+            </ul>
+          </div>
+          <div className="flex flex-1 justify-center md:w-1/2 w-full">
+            <div className="md:h-96 h-80 md:m-0 mb-5 w-96 bg-gradient-to-tr items-center flex-col from-violet-800 to-indigo-900 flex justify-center align-middle">
+            <img src="images.png" className="w-2/4 h-2/4" alt="" />
+            </div>
+          </div>
+        </div>
+        {/* end of 3rd card */}
       </div>
       <footer className="flex p-3 justify-center gap-y-2 align-middle items-center flex-col">
         <h1 className="bg-gradient-to-tr font-semibold text-xl md:text-2xl from-violet-600 to-indigo-400 bg-clip-text text-transparent">
