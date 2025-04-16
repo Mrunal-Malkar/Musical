@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import Navbar from "./components/navbar";
-import { motion } from "motion/react"
+import { motion } from "motion/react";
 import {
   faArrowTrendUp,
   faHeadphones,
@@ -8,22 +8,55 @@ import {
   faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  
-  const [streams,setStreams]=useState([]);
+  type streamType = {
+    _id: string;
+    url: string;
+    title: string;
+    imageUrl: string;
+    creator: string;
+    upvotes: Array<string>;
+    channelName: string;
+    duration: string;
+    zone: string;
+  };
 
-  const fetchStreams=async()=>{
-    const streams=await fetch("http://localhost:3000/api/stream",{method:"GET"});
-    if(streams.status==200){
-      const tracks=await streams.json();
-      setStreams(tracks);
-      console.log(tracks);
-    }else{
+  const router = useRouter();
+  const [streams, setStreams] = useState<streamType[]>([]);
+
+  const fetchStreams = async () => {
+    const response = await fetch("http://localhost:3000/api/stream", {
+      method: "GET",
+    });
+    if (response.status == 200) {
+      const data = await response.json();
+      if (data.streams.lenght > 5) {
+        setStreams(data.streams.slice(0, 5));
+      } else {
+        setStreams(data.streams);
+      }
+    } else {
       setStreams([]);
-    } 
-  }
+    }
+  };
+
+  const calculateLikes = (likes: number | Array<string>) => {
+    if (typeof likes === "number") {
+      return likes;
+    }
+    let val = 0;
+    likes.map(() => {
+      return (val += 1);
+    });
+    return val;
+  };
+
+  useEffect(() => {
+    fetchStreams();
+  }, []);
 
   const container = {
     hidden: { opacity: 0 },
@@ -34,59 +67,54 @@ export default function Home() {
       },
     },
   };
-  
+
   const item = {
     hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   };
-
-  const Songs=[
-    {index:1},
-    {index:2},
-    {index:3},
-    {index:4},
-    {index:5},
-  ]
 
   return (
     <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-800 to-slate-900">
       <Navbar />
       <div className="w-full flex flex-col align-middle items-center justify-center">
-      <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="flex flex-col my-26 sm:my-40 w-full items-center justify-center gap-y-3"
-    >
-      <motion.div
-        variants={item}
-        className="md:text-6xl sm:text-6xl text-4xl w-full bg-gradient-to-r text-transparent bg-clip-text from-violet-600 via-indigo-600 font-bold to-blue-500 text-center"
-      >
-        Listen according to Listeners
-      </motion.div>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="flex flex-col my-26 sm:my-40 w-full items-center justify-center gap-y-3"
+        >
+          <motion.div
+            variants={item}
+            className="md:text-6xl sm:text-6xl text-4xl w-full bg-gradient-to-r text-transparent bg-clip-text from-violet-600 via-indigo-600 font-bold to-blue-500 text-center"
+          >
+            Listen according to Listeners
+          </motion.div>
 
-      <motion.span
-        variants={item}
-        className="w-[260px] sm:w-[460px] md:w-[560px] inline-block md:text-[19px] text-[15px] text-gray-300 sm:text-lg text-center backdrop-blur-2xl"
-      >
-        Discover YouTube music that&apos;s truly loved by the community. Upvoted
-        by listeners, for listeners.
-      </motion.span>
+          <motion.span
+            variants={item}
+            className="w-[260px] sm:w-[460px] md:w-[560px] inline-block md:text-[19px] text-[15px] text-gray-300 sm:text-lg text-center backdrop-blur-2xl"
+          >
+            Discover YouTube music that&apos;s truly loved by the community.
+            Upvoted by listeners, for listeners.
+          </motion.span>
 
-      <motion.div
-        variants={item}
-        className="flex justify-center gap-y-3 sm:gap-x-4 flex-col sm:flex-row items-center font-[450]"
-      >
-        <button className="p-2 px-4 bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110 transition-all">
-          <FontAwesomeIcon icon={faPlay} className="text-gray-300" />
-          Start Listening
-        </button>
-        <button className="p-2 px-4 border-[1px] border-violet-500 bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md gap-x-2 text-violet-600 hover:to-white hover:scale-110 transition-all">
-          <FontAwesomeIcon icon={faArrowTrendUp} className="text-violet-600" />
-          View Trending
-        </button>
-      </motion.div>
-    </motion.div>
+          <motion.div
+            variants={item}
+            className="flex justify-center gap-y-3 sm:gap-x-4 flex-col sm:flex-row items-center font-[450]"
+          >
+            <button className="p-2 px-4 bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110 transition-all">
+              <FontAwesomeIcon icon={faPlay} className="text-gray-300" />
+              Start Listening
+            </button>
+            <button className="p-2 px-4 border-[1px] border-violet-500 bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md gap-x-2 text-violet-600 hover:to-white hover:scale-110 transition-all">
+              <FontAwesomeIcon
+                icon={faArrowTrendUp}
+                className="text-violet-600"
+              />
+              View Trending
+            </button>
+          </motion.div>
+        </motion.div>
         <div className="flex flex-col justify-center align-middle items-center pt-5 sm:pt-30 w-full">
           <div className="flex flex-col justify-center align-middle items-center">
             <div className=" flex flex-col gap-x-3 gap-y-1">
@@ -116,53 +144,74 @@ export default function Home() {
           </div>
 
           <div className="w-full overflow-scroll xl:overflow-visible flex-wrap bg-tranparent p-2 flex flex-col justify-center items-center align-center gap-y-3">
-            <div className="absolute bottom-0 w-full backdrop-blur-2xl"></div>
             {/* start of trending songs */}
-            {Songs.map((index) => {
-              return (
-                <div
-                  key={index.index}
-                  className="rounded-md inline-flex justify-between p-3 align-middle items-center m-1 min-w-[850px] h-[100px] backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600"
-                >
-                  <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                    <img
-                      className="border border-gray-300"
-                      src="https://i.ytimg.com/vi/GhH1QWY6BDc/default.jpg"
-                      width="240"
-                      height="60"
-                      alt="YouTube video thumbnail"
-                    />
-                  </div>
-                  <div className="w-2/6 h-full flex font-medium font-sans justify-center items-start p-1 flex-col overflow-x-auto">
-                    <h1 className="text-center text-gray-200 text-lg md:text-xl">
-                      title caption
-                    </h1>
-                    <p className="text-center text-md md:text-lg text-gray-400">
-                      channel name
-                    </p>
-                  </div>
-                  <div className="w-2/6 h-full flex justify-around items-center p-1 align-middle overflow-x-auto">
-                    <div className="inline">
-                      <FontAwesomeIcon
-                        className="text-2xl text-indigo-500"
-                        icon={faThumbsUp}
+            {streams ? (
+              streams.map((val) => {
+                return (
+                  <div
+                    key={val._id}
+                    className="rounded-md inline-flex justify-between p-3 align-middle items-center m-1 min-w-[850px] h-[100px] backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600"
+                  >
+                    <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
+                      <img
+                        className="border border-gray-300"
+                        src={val.imageUrl}
+                        width="240"
+                        height="60"
+                        alt="YouTube video thumbnail"
                       />
                     </div>
-                    <div className="inline text-gray-200">3:00 min</div>
-                    <div className="inline text-gray-200">
-                      <FontAwesomeIcon
-                        className="text-xl text-violet-500"
-                        icon={faPlay}
-                      />
-                      Play
+                    <div className="w-2/6 h-full flex font-medium font-sans justify-center items-start p-1 flex-col overflow-y-auto">
+                      <h1 className="text-center text-gray-200 text-lg md:text-xl">
+                        {val.title}
+                      </h1>
+                      <p className="text-center text-md md:text-lg text-gray-400">
+                        {val.channelName}
+                      </p>
+                    </div>
+                    <div className="w-2/6 h-full flex justify-around items-center p-1 align-middle overflow-x-auto">
+                      <div
+                        className="flex flex-col"
+                        onClick={() => {
+                          router.push("/world");
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          className="text-2xl text-indigo-500"
+                          icon={faThumbsUp}
+                        />
+                        <p>{calculateLikes(val.upvotes)}</p>
+                      </div>
+                      <div className="inline text-gray-200">{val.duration}</div>
+                      <div
+                        className="inline text-gray-200"
+                        onClick={() => {
+                          router.push("/world");
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          className="text-xl text-violet-500"
+                          icon={faPlay}
+                        />
+                        Play
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div className="font-mono text-xl text-orange-700 p-2">
+                No Songs Added
+              </div>
+            )}
           </div>
           {/* end of trending songs */}
-          <button className="p-2 px-4 text-violet-600 font-semibold rounded-md bg-gray-100">
+          <button
+            onClick={() => {
+              router.push("/world");
+            }}
+            className="p-2 px-4 text-violet-600 font-semibold rounded-md bg-gray-100"
+          >
             Load more Tracks
           </button>
         </div>
@@ -214,40 +263,40 @@ export default function Home() {
         </h1>
         <div className="flex gap-y-4 gap-x-6 md:gap-x-18">
           <a href="https://x.com/Mrunal_Malkar">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="currentColor"
-            className="bi bi-twitter-x text-white m-1"
-            viewBox="0 0 16 16"
-          >
-            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
-          </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              className="bi bi-twitter-x text-white m-1"
+              viewBox="0 0 16 16"
+            >
+              <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
+            </svg>
           </a>
           <a href="https://github.com/Mrunal-Malkar?tab=repositories">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="currentColor"
-            className="bi bi-github text-white m-1"
-            viewBox="0 0 16 16"
-          >
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
-          </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              className="bi bi-github text-white m-1"
+              viewBox="0 0 16 16"
+            >
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
+            </svg>
           </a>
           <a href="https://www.linkedin.com/in/mrunal-malkar/">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="currentColor"
-            className="bi bi-linkedin text-white m-1"
-            viewBox="0 0 16 16"
-          >
-            <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
-          </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              className="bi bi-linkedin text-white m-1"
+              viewBox="0 0 16 16"
+            >
+              <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
+            </svg>
           </a>
         </div>
         <div className="p-16 sm:p-24 flex justify-center align-middle w-full bg-transparent font-mono text-gray-300">

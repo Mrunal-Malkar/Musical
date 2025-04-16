@@ -293,8 +293,10 @@ const Zone = () => {
     <ZoneIdProtector>
       <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <Navbar />
-        <button onClick={()=>{playNext()}}>ff</button>
         <ToastContainer />
+        <div className="p-2 bg-gradient-to-tr text-xl font-mono text-gray-300 from-indigo-600 w-full to-violet-500 m-1 flex align-middle text-center justify-between">
+          Current Zone = {typeof window !== "undefined" && localStorage.getItem("zoneId")}    
+        </div>
         <div className="w-full flex md:flex-row flex-col justify-center align-middle">
           <div className="xl:pt-25 xl:pe-25 xl:ps-25 xl:w-11/12 w-full flex xl:flex-row flex-col-reverse items-center justify-center align-middle">
             <div className="xl:w-1/2  xl:mt-0 xl:mb-0 mt-4 mb-4 md:w-11/12 w-full flex flex-col justify-start">
