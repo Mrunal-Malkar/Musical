@@ -8,9 +8,9 @@ import {
   faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchData } from "next-auth/client/_utils";
 
 export default function Home() {
   type streamType = {
@@ -108,11 +108,21 @@ export default function Home() {
             variants={item}
             className="flex justify-center gap-y-3 sm:gap-x-4 flex-col sm:flex-row items-center font-[450]"
           >
-            <button className="p-2 px-4 bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110 transition-all">
+            <button 
+            onClick={()=>router.push("/world")}
+            className="p-2 px-4 bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110 transition-all">
               <FontAwesomeIcon icon={faPlay} className="text-gray-300" />
               Start Listening
             </button>
-            <button className="p-2 px-4 border-[1px] border-violet-500 bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md gap-x-2 text-violet-600 hover:to-white hover:scale-110 transition-all">
+            <button 
+              onClick={() => {
+                window.scrollBy({
+                  top: 500,
+                  left: 0,
+                  behavior: 'smooth'
+                });
+              }}
+            className="p-2 px-4 border-[1px] border-violet-500 bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md gap-x-2 text-violet-600 hover:to-white hover:scale-110 transition-all">
               <FontAwesomeIcon
                 icon={faArrowTrendUp}
                 className="text-violet-600"
@@ -177,16 +187,14 @@ export default function Home() {
                     </div>
                     <div className="w-2/6 h-full flex justify-around items-center p-1 align-middle overflow-x-auto">
                       <div
-                        className="flex flex-col"
+                        className="flex flex-col bg-zinc-900 rounded-md items-center justify-center"
                         onClick={() => {
                           router.push("/world");
                         }}
                       >
-                        <FontAwesomeIcon
-                          className="text-2xl text-indigo-500"
-                          icon={faThumbsUp}
-                        />
-                        <p>{calculateLikes(val.upvotes)}</p>
+                        <i className="bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500">
+                        </i>
+                        <p className="text-gray-200">{calculateLikes(val.upvotes)}</p>
                       </div>
                       <div className="inline text-gray-200">{val.duration}</div>
                       <div

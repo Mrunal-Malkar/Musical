@@ -11,7 +11,7 @@ const ZoneIdProtector = ({ children }: { children: ReactNode }) => {
     const zoneId = localStorage.getItem("zoneId");
     if (!zoneId) {
       route.push("/zoneId");
-    } else {
+    } else if(zoneId){
       setIsAllowed(true);
     }
   }, []);

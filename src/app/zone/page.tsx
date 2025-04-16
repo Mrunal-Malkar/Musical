@@ -10,6 +10,7 @@ import Loader from "../components/loader";
 import ZoneIdProtector from "../utils/idProtector";
 import { useRouter } from "next/navigation";
 import YouTubePlayer from "../components/player.lib";
+import { AuthProtector } from "../utils/authProtector";
 
 const Zone = () => {
   type streamType = {
@@ -24,7 +25,6 @@ const Zone = () => {
     zone: string;
   };
   const router = useRouter();
-  const ytPlayerRef = useRef(null);
   const { data: session } = useSession();
   const [streams, setStreams] = useState<streamType[]>([]);
   const streamsRef = useRef(streams);
@@ -90,43 +90,6 @@ const Zone = () => {
       setStreams(filteredStreams);
     }
   }, [streams, currentStream, excluded]);
-
-  // const YTPlayer = () => {
-  //   if (!document.getElementById("yt-frame-api")) {
-  //       const tag = document.createElement("script");
-  //       // id could not exist
-  //       tag.id = "yt-frame-api";
-  //       tag.src = "https://www.youtube.com/iframe_api";
-  //       document.body.appendChild(tag);}
-  
-  //       //@ts-ignore
-  //       window.onYouTubeIframeAPIReady = function () {
-  //         if (ytPlayerRef.current) {
-  //           ytPlayerRef.current.destroy();
-  //         }
-  //         //@ts-ignore
-  //         ytPlayerRef.current = new window.YT.Player("ytPLAYER", {
-  //           height: "390",
-  //           width: "640",
-  //           videoId: videoId,
-  //           events: {
-  //             onStateChange: (event: { data }) => {
-  //               if (event.data === 0) {
-  //                 playNext();
-  //               }
-  //             },
-  //           },
-  //         });
-  //     }
-  // };
-
-  // useEffect(() => {
-  //   if (ytPlayerRef.current && ytPlayerRef.current.loadVideoById) {
-  //     ytPlayerRef.current.loadVideoById(videoId);
-  //   } else {
-  //     YTPlayer();
-  //   }
-  // }, [videoId]);
 
   const fetchStreams = async () => {
     setStreamsLoading(true);
@@ -267,10 +230,10 @@ const Zone = () => {
     }
   };
 
-const leaveZone=()=>{
-  localStorage.removeItem("zoneId");
-  toast.success("you have left the zone!");
-}
+  const leaveZone = () => {
+    localStorage.removeItem("zoneId");
+    toast.success("you have left the zone!");
+  };
 
   const handleLike = async (id: string, user: string) => {
     try {
@@ -292,231 +255,239 @@ const leaveZone=()=>{
 
   useEffect(() => {
     fetchStreams();
-    const interval=setInterval(()=>{
+    const interval = setInterval(() => {
       fetchStreams();
-    },60000)
+    }, 60000);
 
-    return ()=>clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
-
   return (
-    <ZoneIdProtector>
-      <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-        <Navbar />
-        <ToastContainer />
-        <div className="p-2 bg-gradient-to-tr text-xl font-mono text-gray-300 items-center from-indigo-600 to-violet-500 m-1 flex align-middle text-center justify-around">
-          <div>
-            Current Zone = {typeof window !== "undefined" && localStorage.getItem("zoneId")}    
+    <AuthProtector>
+      <ZoneIdProtector>
+        <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+          <Navbar />
+          <ToastContainer />
+          <div className="p-2 bg-gradient-to-tr text-xl font-mono text-gray-300 items-center from-indigo-600 to-violet-500 m-1 flex align-middle text-center justify-around">
+            <div>
+              Current Zone ={" "}
+              {typeof window !== "undefined" && localStorage.getItem("zoneId")}
             </div>
-            <button onClick={leaveZone} className="bg-indigo-700 cursor-pointer text-gray-300 p-1 font-serif text-md">
+            <button
+              onClick={leaveZone}
+              className="bg-gradient-to-br from-indigo-600 to-violet-600 rounded-md cursor-pointer text-gray-300 p-1 font-serif text-md"
+            >
               Leave Zone?
             </button>
-        </div>
-        <div className="w-full flex md:flex-row flex-col justify-center align-middle">
-          <div className="xl:pt-25 xl:pe-25 xl:ps-25 xl:w-11/12 w-full flex xl:flex-row flex-col-reverse items-center justify-center align-middle">
-            <div className="xl:w-1/2  xl:mt-0 xl:mb-0 mt-4 mb-4 md:w-11/12 w-full flex flex-col justify-start">
-              <div className="text-2xl sm:text-3xl m-2 md:text-4xl text-white font-bold font-sans">
-                <h1>Currently playing</h1>
-              </div>
-              {currentStreamLoading ? (
-                <div className="w-full h-full flex justify-center align-middle">
-                  <Loader />
+          </div>
+          <div className="w-full flex md:flex-row flex-col justify-center align-middle">
+            <div className="xl:pt-25 xl:pe-25 xl:ps-25 xl:w-11/12 w-full flex xl:flex-row flex-col-reverse items-center justify-center align-middle">
+              <div className="xl:w-1/2  xl:mt-0 xl:mb-0 mt-4 mb-4 md:w-11/12 w-full flex flex-col justify-start">
+                <div className="text-2xl sm:text-3xl m-2 md:text-4xl text-white font-bold font-sans">
+                  <h1>Currently playing</h1>
                 </div>
-              ) : currentStream ? (
-                <div
-                  key={currentStream._id}
-                  className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
-                >
-                  <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                    <img
-                      className="border border-gray-300"
-                      src={currentStream.imageUrl}
-                      width="240"
-                      height="50"
-                      alt="YouTube video thumbnail"
-                    />
+                {currentStreamLoading ? (
+                  <div className="w-full h-full flex justify-center align-middle">
+                    <Loader />
                   </div>
-                  <div className="w-6/12 md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
-                    <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto scroolbar-none ">
-                      {currentStream.title}
-                      <span className="sm:hidden block">|</span>
-                      <span className="text-center text-md md:text-lg text-gray-400">
-                        {currentStream.channelName}
-                      </span>
-                    </h1>
-                  </div>
-                  <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
-                    <div className="text-gray-200 flex flex-col gap-y-2 justify-center items-center">
-                      <p className="md:block hidden">
-                        {currentStream.duration}
-                      </p>
-                      <div className="inline text-gray-200">
-                        <FontAwesomeIcon
-                          className="text-xl text-violet-500"
-                          onClick={() => {
-                            setCurrentStream(currentStream);
-                            setURL(currentStream.url);
-                          }}
-                          icon={faPlay}
-                        />
-                        <span className="md:blok hidden">Play</span>
+                ) : currentStream ? (
+                  <div
+                    key={currentStream._id}
+                    className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
+                  >
+                    <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
+                      <img
+                        className="border border-gray-300"
+                        src={currentStream.imageUrl}
+                        width="240"
+                        height="50"
+                        alt="YouTube video thumbnail"
+                      />
+                    </div>
+                    <div className="w-6/12 md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
+                      <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto scroolbar-none ">
+                        {currentStream.title}
+                        <span className="sm:hidden block">|</span>
+                        <span className="text-center text-md md:text-lg text-gray-400">
+                          {currentStream.channelName}
+                        </span>
+                      </h1>
+                    </div>
+                    <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
+                      <div className="text-gray-200 flex flex-col gap-y-2 justify-center items-center">
+                        <p className="md:block hidden">
+                          {currentStream.duration}
+                        </p>
+                        <div className="inline text-gray-200">
+                          <FontAwesomeIcon
+                            className="text-xl text-violet-500"
+                            onClick={() => {
+                              setCurrentStream(currentStream);
+                              setURL(currentStream.url);
+                            }}
+                            icon={faPlay}
+                          />
+                          <span className="md:blok hidden">Play</span>
+                        </div>
+                      </div>
+                      <div
+                        className="flex flex-col justify-center items-center"
+                        onClick={() => {
+                          handleLike(
+                            currentStream._id,
+                            session?.user?.email as string
+                          );
+                        }}
+                      >
+                        <i
+                          className={
+                            checkLike(currentStream.upvotes)
+                              ? "bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
+                              : "bi bi-caret-up text-2xl bg-zinc-900 rounded-xl p-1 text-indigo-400"
+                          }
+                        ></i>
+                        <p className="text-gray-100">
+                          {calculateLikes(currentStream.upvotes)}
+                        </p>
                       </div>
                     </div>
-                    <div
-                      className="flex flex-col justify-center items-center"
-                      onClick={() => {
-                        handleLike(
-                          currentStream._id,
-                          session?.user?.email as string
-                        );
-                      }}
-                    >
-                      <i
-                        className={
-                          checkLike(currentStream.upvotes)
-                            ? "bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
-                            : "bi bi-caret-up text-2xl bg-zinc-900 rounded-xl p-1 text-indigo-400"
-                        }
-                      ></i>
-                      <p className="text-gray-100">
-                        {calculateLikes(currentStream.upvotes)}
-                      </p>
-                    </div>
                   </div>
+                ) : (
+                  <div className="w-full ms-4 text-red-600 font-bold text-2xl">
+                    No songs added!
+                  </div>
+                )}
+                <div className="text-xl sm:text-2xl font-semibold tracking-tighter font-sans text-white m-2 mt-5">
+                  Up Nexts-
                 </div>
-              ) : (
-                <div className="w-full ms-4 text-red-600 font-bold text-2xl">
-                  No songs added!
-                </div>
-              )}
-              <div className="text-xl sm:text-2xl font-semibold tracking-tighter font-sans text-white m-2 mt-5">
-                Up Nexts-
-              </div>
-              {streamsLoading ? (
-                <div className="w-full h-full flex justify-center align-middle">
-                  <Loader />
-                </div>
-              ) : streams.length >= 1 ? (
-                streams.map((val) => {
-                  return (
-                    <div
-                      key={val._id}
-                      className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
-                    >
-                      <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                        <img
-                          className="border border-gray-300"
-                          src={val.imageUrl}
-                          width="240"
-                          height="50"
-                          alt="YouTube video thumbnail"
-                        />
-                      </div>
-                      <div className="w-6/12 md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
-                        <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto scroolbar-none ">
-                          {val.title}
-                          <span className="sm:hidden block">|</span>
-                          <span className="text-center text-md md:text-lg text-gray-400">
-                            {val.channelName}
-                          </span>
-                        </h1>
-                      </div>
-                      <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
-                        <div className="text-gray-200 flex flex-col justify-center items-center">
-                          <p className="md:block hidden">{val.duration}</p>
-                          <div className="inline text-gray-200">
-                            <FontAwesomeIcon
-                              className="text-xl text-violet-500"
-                              onClick={() => {
-                                setCurrentStream(val);
-                                setURL(val.url);
-                              }}
-                              icon={faPlay}
-                            />
-                            <span className="md:blok hidden">Play</span>
+                {streamsLoading ? (
+                  <div className="w-full h-full flex justify-center align-middle">
+                    <Loader />
+                  </div>
+                ) : streams.length >= 1 ? (
+                  streams.map((val) => {
+                    return (
+                      <div
+                        key={val._id}
+                        className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
+                      >
+                        <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
+                          <img
+                            className="border border-gray-300"
+                            src={val.imageUrl}
+                            width="240"
+                            height="50"
+                            alt="YouTube video thumbnail"
+                          />
+                        </div>
+                        <div className="w-6/12 md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
+                          <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto scroolbar-none ">
+                            {val.title}
+                            <span className="sm:hidden block">|</span>
+                            <span className="text-center text-md md:text-lg text-gray-400">
+                              {val.channelName}
+                            </span>
+                          </h1>
+                        </div>
+                        <div className="flex md:flex-row flex-col md:gap-x-3 gap-x-2 overflow-x-auto justify-self-end">
+                          <div className="text-gray-200 flex flex-col justify-center items-center">
+                            <p className="md:block hidden">{val.duration}</p>
+                            <div className="inline text-gray-200">
+                              <FontAwesomeIcon
+                                className="text-xl text-violet-500"
+                                onClick={() => {
+                                  setCurrentStream(val);
+                                  setURL(val.url);
+                                }}
+                                icon={faPlay}
+                              />
+                              <span className="md:blok hidden">Play</span>
+                            </div>
+                          </div>
+                          <div
+                            className="flex flex-col justify-center items-center"
+                            onClick={() => {
+                              handleLike(
+                                val._id,
+                                session?.user?.email as string
+                              );
+                            }}
+                          >
+                            <i
+                              className={
+                                checkLike(val.upvotes)
+                                  ? "bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
+                                  : "bi bi-caret-up text-2xl bg-zinc-900 rounded-xl p-1 text-indigo-400"
+                              }
+                            ></i>
+
+                            <p className="text-gray-100">
+                              {calculateLikes(val.upvotes)}
+                            </p>
                           </div>
                         </div>
-                        <div
-                          className="flex flex-col justify-center items-center"
-                          onClick={() => {
-                            handleLike(val._id, session?.user?.email as string);
-                          }}
-                        >
-                          <i
-                            className={
-                              checkLike(val.upvotes)
-                                ? "bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"
-                                : "bi bi-caret-up text-2xl bg-zinc-900 rounded-xl p-1 text-indigo-400"
-                            }
-                          ></i>
-
-                          <p className="text-gray-100">
-                            {calculateLikes(val.upvotes)}
-                          </p>
-                        </div>
                       </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="w-full ms-4 text-red-600 font-bold text-2xl">
-                  No songs added!{" "}
-                </div>
-              )}
-            </div>
-            <div className="xl:w-1/2 xl:mt-0 xl:mb-0 mt-4 mb-4 xl:justify-self-start justify-self-auto self-auto xl:self-start md:w-11/12 w-full flex flex-col-reverse xl:flex-col">
-              <div className="w-full flex flex-col items-center xl:block">
-                <div className="w-10/12 md:w-3/4 sm:w-3/4 flex justify-between items-end p-2">
-                  <h1 className="font-bold p-1 text-white text-2xl">
-                    Add a song
-                  </h1>
-                  <button className="p-2 text-lg cursor-pointer justify-center align-middle items-center gap-x-1 bg-violet-600 text-gray-200 flex px-4 rounded-sm">
-                    <FontAwesomeIcon
-                      icon={faShareNodes}
-                      className="font-extralight"
-                    />
-                    <p>Share</p>
-                  </button>
-                </div>
-                <div className="flex flex-col border-none w-10/12 md:w-3/4 sm:w-3/4">
-                  <input
-                    type="text"
-                    onChange={(e) => setURL(e.target.value)}
-                    placeholder="enter the URL here"
-                    className="bg-gray-700 m-0.5 focus:border-[1px] focus:border-gray-400 rounded-md outline-none text-gray-100 text-xl p-2"
-                  />
-                  <button
-                    onClick={() => addSong()}
-                    className={
-                      songAddLoading
-                        ? "bg-violet-400 rounded-md p-2 text-lg text-white"
-                        : "bg-violet-600 rounded-md p-2 text-lg text-white"
-                    }
-                  >
-                    Add to Queue
-                  </button>
-                </div>
+                    );
+                  })
+                ) : (
+                  <div className="w-full ms-4 text-red-600 font-bold text-2xl">
+                    No songs added!{" "}
+                  </div>
+                )}
               </div>
-              <div className="w-full flex flex-col items-center xl:block">
-                <div className="p-1 pt-3">
-                  <h1 className="text-lg font-semibold text-gray-300 md:text-xl">
-                    Now Playing
-                  </h1>
+              <div className="xl:w-1/2 xl:mt-0 xl:mb-0 mt-4 mb-4 xl:justify-self-start justify-self-auto self-auto xl:self-start md:w-11/12 w-full flex flex-col-reverse xl:flex-col">
+                <div className="w-full flex flex-col items-center xl:block">
+                  <div className="w-10/12 md:w-3/4 sm:w-3/4 flex justify-between items-end p-2">
+                    <h1 className="font-bold p-1 text-white text-2xl">
+                      Add a song
+                    </h1>
+                    <button className="p-2 text-lg cursor-pointer justify-center align-middle items-center gap-x-1 bg-violet-600 text-gray-200 flex px-4 rounded-sm">
+                      <FontAwesomeIcon
+                        icon={faShareNodes}
+                        className="font-extralight"
+                      />
+                      <p>Share</p>
+                    </button>
+                  </div>
+                  <div className="flex flex-col border-none w-10/12 md:w-3/4 sm:w-3/4">
+                    <input
+                      type="text"
+                      onChange={(e) => setURL(e.target.value)}
+                      placeholder="enter the URL here"
+                      className="bg-gray-700 m-0.5 focus:border-[1px] focus:border-gray-400 rounded-md outline-none text-gray-100 text-xl p-2"
+                    />
+                    <button
+                      onClick={() => addSong()}
+                      className={
+                        songAddLoading
+                          ? "bg-violet-400 rounded-md p-2 text-lg text-white"
+                          : "bg-violet-600 rounded-md p-2 text-lg text-white"
+                      }
+                    >
+                      Add to Queue
+                    </button>
+                  </div>
                 </div>
-                <div className="p-2 bg-gray-700 rounded-md md:h-56 h-48 w-full max-w-80 md:w-96 md:m-2 flex justify-center align-middle items-center">
-                  <YouTubePlayer videoId={videoId} playNext={playNext} />
+                <div className="w-full flex flex-col items-center xl:block">
+                  <div className="p-1 pt-3">
+                    <h1 className="text-lg font-semibold text-gray-300 md:text-xl">
+                      Now Playing
+                    </h1>
+                  </div>
+                  <div className="p-2 bg-gray-700 rounded-md md:h-56 h-48 w-full max-w-80 md:w-96 md:m-2 flex justify-center align-middle items-center">
+                    <YouTubePlayer videoId={videoId} playNext={playNext} />
+                  </div>
+                  <button className="px-4 gap-x-2 text-gray-300 flex justify-center items-center m-2 w-10/12 sm:w-6/12 md:w-4/12 p-2 bg-violet-700">
+                    <FontAwesomeIcon className="text-xl" icon={faPlay} />
+                    Play Next
+                  </button>
                 </div>
-                <button className="px-4 gap-x-2 text-gray-300 flex justify-center items-center m-2 w-10/12 sm:w-6/12 md:w-4/12 p-2 bg-violet-700">
-                  <FontAwesomeIcon className="text-xl" icon={faPlay} />
-                  Play Next
-                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </ZoneIdProtector>
+      </ZoneIdProtector>
+    </AuthProtector>
   );
 };
 export default Zone;
