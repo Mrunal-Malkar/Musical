@@ -292,7 +292,13 @@ const leaveZone=()=>{
 
   useEffect(() => {
     fetchStreams();
+    const interval=setInterval(()=>{
+      fetchStreams();
+    },60000)
+
+    return ()=>clearInterval(interval);
   }, []);
+
 
   return (
     <ZoneIdProtector>

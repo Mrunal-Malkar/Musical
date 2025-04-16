@@ -22,7 +22,6 @@ const World = () => {
     zone:string;
   };
 
-  const ytPlayerRef = useRef(null);
   const { data: session } = useSession();
   const [streams, setStreams] = useState<streamType[]>([]);
   const streamsRef = useRef(streams);
@@ -88,44 +87,6 @@ const World = () => {
       setStreams(filteredStreams);
     }
   }, [streams, currentStream, excluded]);
-
-  // const YTPlayer = () => {
-  //   if (!document.getElementById("yt-frame-api")) {
-  //     const tag = document.createElement("script");
-  //     //@ts-ignore
-  //     tag.id = "yt-frame-api";
-  //     tag.src = "https://www.youtube.com/iframe_api";
-  //     document.body.appendChild(tag);
-  //   }
-
-  //   //@ts-ignore
-  //   window.onYouTubeIframeAPIReady = function () {
-  //     if (ytPlayerRef.current) {
-  //       ytPlayerRef.current.destroy();
-  //     }
-  //     //@ts-ignore
-  //     ytPlayerRef.current = new window.YT.Player("ytPlayer", {
-  //       height: "390",
-  //       width: "640",
-  //       videoId: videoId,
-  //       events: {
-  //         onStateChange: (event) => {
-  //           if (event.data === 0) {
-  //             playNext();
-  //           }
-  //         },
-  //       },
-  //     });
-  //   };
-  // };
-
-  // useEffect(() => {
-  //   if (ytPlayerRef.current && ytPlayerRef.current.loadVideoById) {
-  //     ytPlayerRef.current.loadVideoById(videoId);
-  //   } else {
-  //     YTPlayer();
-  //   }
-  // }, [videoId]);
 
   const fetchStreams = async () => {
     if (!currentStream) {
@@ -275,10 +236,15 @@ const World = () => {
     }
   };
 
-  useEffect(() => {
-    fetchStreams();
-  }, []);
-
+    useEffect(() => {
+      fetchStreams();
+      const interval=setInterval(()=>{
+        fetchStreams();
+      },60000)
+  
+      return ()=>clearInterval(interval);
+    }, []);
+  
   return (
     <>
       <div className="w-screen min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">

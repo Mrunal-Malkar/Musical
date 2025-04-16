@@ -10,6 +10,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { fetchData } from "next-auth/client/_utils";
 
 export default function Home() {
   type streamType = {
@@ -56,6 +57,11 @@ export default function Home() {
 
   useEffect(() => {
     fetchStreams();
+    const interval=setInterval(()=>{
+      fetchStreams();
+    },60000)
+
+    return ()=>clearInterval(interval);
   }, []);
 
   const container = {
