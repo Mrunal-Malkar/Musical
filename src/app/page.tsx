@@ -1,11 +1,10 @@
 "use client";
 import Navbar from "./components/navbar";
-import { motion, px } from "motion/react";
+import { motion } from "motion/react";
 import {
   faArrowTrendUp,
   faHeadphones,
   faPlay,
-  faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "bootstrap-icons/font/bootstrap-icons.css";

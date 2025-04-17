@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Navbar from "../components/navbar";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -47,6 +47,12 @@ const ZoneId = () => {
     }
   };
 
+  useEffect(()=>{
+    if(localStorage.getItem("zoneId")){
+      router.push("/zone");
+    }
+  },[])
+
   return (
     <div className="w-screen flex items-center flex-col min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <Navbar />
@@ -62,7 +68,7 @@ const ZoneId = () => {
             ref={input1}
             className="w-full md:w-1/2 text-gray-300 text-xl border-2 p-2 border-gray-300 rounded-lg self-center"
             type="text"
-            placeholder="Enter the zone ID"
+            placeholder="Enter the zone Name"
           />
           <button
             onClick={joinRoom}
@@ -86,7 +92,7 @@ const ZoneId = () => {
             ref={input2}
             className="w-full md:w-1/2 border-2 text-xl text-gray-300 p-2 border-gray-300 rounded-lg self-center"
             type="text"
-            placeholder="Enter the new zone ID"
+            placeholder="Enter the new zone Name"
           />
           <button
             onClick={createRoom}

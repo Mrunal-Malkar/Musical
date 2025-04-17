@@ -233,6 +233,7 @@ const Zone = () => {
   const leaveZone = () => {
     localStorage.removeItem("zoneId");
     toast.success("you have left the zone!");
+    location.reload();
   };
 
   const handleLike = async (id: string, user: string) => {
