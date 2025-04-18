@@ -266,7 +266,7 @@ export default function Home() {
                 className="text-indigo-500 text-3xl"
               />
               <p className="text-gray-400 font-semibold">From Youtube</p>
-              <p className="text-gray-400 font-semibold">To Your eare's</p>
+              <p className="text-gray-400 font-semibold">To Your eare&appos;s</p>
             </div>
           </div>
         </div>
