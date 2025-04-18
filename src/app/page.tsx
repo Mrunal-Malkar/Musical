@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Home() {
   type streamType = {
@@ -168,7 +169,7 @@ export default function Home() {
                     className="rounded-md inline-flex justify-between p-3 align-middle items-center m-1 min-w-[850px] h-[100px] backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600"
                   >
                     <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                      <img
+                      <Image
                         className="border border-gray-300"
                         src={val.imageUrl}
                         width="240"
@@ -273,7 +274,7 @@ export default function Home() {
         <div className="mt-16 sm:p-34 p-14 w-full md:flex-row flex-col-reverse flex justify-start align-middle text-gray-300 bg-gradient-to-tr from-slate-800 to-slate-900 ">
           <div className="flex flex-1 justify-center md:w-1/2 w-full">
             <div className="md:h-96 h-80 md:m-0 mb-5 w-96 bg-gradient-to-tr items-center flex-col from-blue-700 to-green-700 flex justify-center align-middle">
-              <img src="earth-globe.png" className="w-3/4 h-3/4" alt="" />
+              <Image src="earth-globe.png" className="w-3/4 h-3/4" alt="" />
             </div>
           </div>
           <div className="flex flex-col md:w-1/2 w-full flex-2">
@@ -339,7 +340,7 @@ export default function Home() {
           </div>
           <div className="flex flex-1 justify-center md:w-1/2 w-full">
             <div className="md:h-96 h-80 md:m-0 mb-5 w-96 bg-gradient-to-tr items-center flex-col from-violet-800 to-indigo-900 flex justify-center align-middle">
-            <img src="images.png" className="w-2/4 h-2/4" alt="" />
+            <Image src="images.png" className="w-2/4 h-2/4" alt="" />
             </div>
           </div>
         </div>
