@@ -21,8 +21,21 @@ const ZoneId = () => {
     }
 
     try {
-      localStorage.setItem("zoneId", zoneId);
-      router.push("/zone");
+      const exist=await fetch("api/stream/zonecheck",{
+        method:"POST",
+        headers:{
+          content:"apllication/json",
+        },
+        body:JSON.stringify({zoneId:zoneId})
+      });
+      if(exist.status==200){
+        localStorage.setItem("zoneId", zoneId);
+        router.push("/zone");
+      }else if(exist.status==411){
+        toast.error("some error occured while connecting with zone!")
+      }else{
+        toast.error(`No zone found with name:${zoneId}`)
+      }
     } catch (err) {
       toast.error(`Something went wrong while joining:${err}.`);
     }
