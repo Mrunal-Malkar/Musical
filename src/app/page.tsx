@@ -38,7 +38,7 @@ export default function Home() {
       
     console.log("trying to fetch all the stream-backend 2")
       const data = await response.json();
-      if (data.streams.lenght > 5) {
+      if (data.streams.length > 5) {
         setStreams(data.streams.slice(0, 5));
       } else {
         setStreams(data.streams);
@@ -191,7 +191,7 @@ export default function Home() {
                         {val.channelName}
                       </p>
                     </div>
-                    <div className="w-2/6 h-full flex justify-around items-center p-1 align-middle overflow-x-auto">
+                    <div className="w-2/6 h-full flex justify-around items-center p-1 align-middle thin-scrollbar overflow-x-auto">
                       <div
                         className="flex flex-col bg-zinc-900 rounded-md items-center justify-center"
                         onClick={() => {
