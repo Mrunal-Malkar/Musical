@@ -291,7 +291,7 @@ const World = () => {
                       alt="YouTube video thumbnail"
                     />
                   </div>
-                  <div className="w-6/12 md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
+                  <div className="w-6/12 thin-scrollbar md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
                     <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto scroolbar-none ">
                       {currentStream.title}
                       <span className="sm:hidden block">|</span>
@@ -367,7 +367,7 @@ const World = () => {
                           alt="YouTube video thumbnail"
                         />
                       </div>
-                      <div className="w-6/12 md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
+                      <div className="w-6/12 thin-scrollbar md:w-8/12 flex-wrap h-full flex font-medium font-sans justify-center items-start p-1 flex-col ">
                         <h1 className="text-center flex justify-between w-full text-gray-200 text-lg md:text-xl overflow-x-auto scroolbar-none ">
                           {val.title}
                           <span className="sm:hidden block">|</span>

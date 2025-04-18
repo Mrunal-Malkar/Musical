@@ -172,7 +172,7 @@ export default function Home() {
                 return (
                   <div
                     key={val._id}
-                    className="rounded-md inline-flex justify-between p-3 align-middle items-center m-1 min-w-[850px] h-[100px] backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600"
+                    className="rounded-md inline-flex justify-between p-3 align-middle items-center m-1 min-w-[850px] md:max-w-[800px] h-[100px] backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600"
                   >
                     <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
                       <Image
