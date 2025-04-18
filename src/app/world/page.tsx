@@ -144,6 +144,9 @@ const World = () => {
   };
 
   const addSong = async () => {
+    if(!(session?.user?.email)){
+      return toast.error("sign in required!")
+    }
     if (songAddLoading) {
       return null;
     }
@@ -178,6 +181,9 @@ const World = () => {
 
   const Like = async (id: string, user: string) => {
     try {
+      if(!(session?.user?.email)){
+      return toast.error("sign in required!")
+      }
       const response = await fetch("api/stream/upvote", {
         method: "POST",
         headers: {
@@ -198,6 +204,9 @@ const World = () => {
 
   const disLike = async (id: string, user: string) => {
     try {
+      if(!(session?.user?.email)){
+        return toast.error("sign in required!")
+      }
       const response = await fetch("api/stream/downvote", {
         method: "POST",
         headers: {
