@@ -99,7 +99,7 @@ const Zone = () => {
       router.push("/zoneId");
     }
     const streams = await fetch(
-      `http://localhost:3000/api/stream/zonestream/${zoneId}`,
+      `https://musical-eosin.vercel.app/api/stream/zonestream/${zoneId}`,
       {
         method: "POST",
       }
