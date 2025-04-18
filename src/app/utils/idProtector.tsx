@@ -14,7 +14,9 @@ const ZoneIdProtector = ({ children }: { children: ReactNode }) => {
     } else if(zoneId){
       setIsAllowed(true);
     }
-  }, []);
+  }, 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  []);
 
   if (!isAllowed) return null; 
 

@@ -6,7 +6,7 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { zoneid: string } } // <-- correctly use `context`
 ) {
-  const theParams = await params;
+  const theParams = params;
   const zoneId=theParams.zoneid;
 
   if (!zoneId) {

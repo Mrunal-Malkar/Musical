@@ -51,7 +51,9 @@ const ZoneId = () => {
     if(localStorage.getItem("zoneId")){
       router.push("/zone");
     }
-  },[])
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [])
 
   return (
     <div className="w-screen flex items-center flex-col min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
