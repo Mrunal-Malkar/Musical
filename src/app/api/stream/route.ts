@@ -3,6 +3,7 @@ import Stream from "../../../../models/stream.model";
 
 export async function GET() {
   try {
+    console.log("trying to fetch all the stream-backend")
     const streams = await Stream.find({}).sort({ upvotes: -1 }).limit(10);
     return NextResponse.json(
       {

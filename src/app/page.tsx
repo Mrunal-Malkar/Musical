@@ -29,10 +29,14 @@ export default function Home() {
   const [streams, setStreams] = useState<streamType[]>([]);
 
   const fetchStreams = async () => {
+    
+    console.log("trying to fetch all the stream-frontend1")
     const response = await fetch("http://localhost:3000/api/stream", {
       method: "GET",
     });
     if (response.status == 200) {
+      
+    console.log("trying to fetch all the stream-backend 2")
       const data = await response.json();
       if (data.streams.lenght > 5) {
         setStreams(data.streams.slice(0, 5));
