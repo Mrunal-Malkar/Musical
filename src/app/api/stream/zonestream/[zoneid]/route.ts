@@ -6,13 +6,6 @@ export async function POST(request: NextRequest) {
   const segments = url.pathname.split('/');
   const zoneId = segments[segments.length - 1]; // Assumes 'zoneid' is the last segment
 
-
-// export async function POST(
-//   request: NextRequest,
-//   context: { params: Record<string, string> } //
-// ) {
-//   const zoneId = context.params.zoneid;
-
   if (!zoneId) {
     return NextResponse.json({ message: "zone id required!" }, { status: 400 });
   }

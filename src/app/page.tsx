@@ -57,11 +57,11 @@ export default function Home() {
 
   useEffect(() => {
     fetchStreams();
-    const interval=setInterval(()=>{
+    const interval = setInterval(() => {
       fetchStreams();
-    },60000)
+    }, 60000);
 
-    return ()=>clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   const container = {
@@ -108,21 +108,23 @@ export default function Home() {
             variants={item}
             className="flex justify-center gap-y-3 sm:gap-x-4 flex-col sm:flex-row items-center font-[450]"
           >
-            <button 
-            onClick={()=>router.push("/world")}
-            className="p-2 px-4 bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110 transition-all">
+            <button
+              onClick={() => router.push("/world")}
+              className="p-2 px-4 bg-gradient-to-tr from-violet-600 flex items-center justify-center hover:to-violet-600 to-violet-800 rounded-md text-gray-100 gap-x-2 hover:scale-110 transition-all"
+            >
               <FontAwesomeIcon icon={faPlay} className="text-gray-300" />
               Start Listening
             </button>
-            <button 
+            <button
               onClick={() => {
                 window.scrollBy({
                   top: 500,
                   left: 0,
-                  behavior: 'smooth'
+                  behavior: "smooth",
                 });
               }}
-            className="p-2 px-4 border-[1px] border-violet-500 bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md gap-x-2 text-violet-600 hover:to-white hover:scale-110 transition-all">
+              className="p-2 px-4 border-[1px] border-violet-500 bg-gradient-to-tr from-gray-100 flex items-center justify-center to-gray-200 rounded-md gap-x-2 text-violet-600 hover:to-white hover:scale-110 transition-all"
+            >
               <FontAwesomeIcon
                 icon={faArrowTrendUp}
                 className="text-violet-600"
@@ -192,9 +194,10 @@ export default function Home() {
                           router.push("/world");
                         }}
                       >
-                        <i className="bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500">
-                        </i>
-                        <p className="text-gray-200">{calculateLikes(val.upvotes)}</p>
+                        <i className="bi bi-caret-up-fill text-2xl  bg-zinc-900 rounded-xl p-1 text-indigo-500"></i>
+                        <p className="text-gray-200">
+                          {calculateLikes(val.upvotes)}
+                        </p>
                       </div>
                       <div className="inline text-gray-200">{val.duration}</div>
                       <div
@@ -266,7 +269,9 @@ export default function Home() {
                 className="text-indigo-500 text-3xl"
               />
               <p className="text-gray-400 font-semibold">From Youtube</p>
-              <p className="text-gray-400 font-semibold">To Your eare&appos;s</p>
+              <p className="text-gray-400 font-semibold">
+                To Your eare&appos;s
+              </p>
             </div>
           </div>
         </div>
@@ -274,7 +279,14 @@ export default function Home() {
         <div className="mt-16 sm:p-34 p-14 w-full md:flex-row flex-col-reverse flex justify-start align-middle text-gray-300 bg-gradient-to-tr from-slate-800 to-slate-900 ">
           <div className="flex flex-1 justify-center md:w-1/2 w-full">
             <div className="md:h-96 h-80 md:m-0 mb-5 w-96 bg-gradient-to-tr items-center flex-col from-blue-700 to-green-700 flex justify-center align-middle">
-              <Image src="earth-globe.png" className="w-3/4 h-3/4" alt="" />
+              <Image
+                src="/earth-globe.png"
+                alt="Earth Globe"
+                width={500} // Default width to calculate aspect ratio (important for optimization)
+                height={500} // Default height to calculate aspect ratio (important for optimization)
+                layout="intrinsic" // This allows dynamic resizing via className
+                className="w-3/4 h-3/4"
+              />
             </div>
           </div>
           <div className="flex flex-col md:w-1/2 w-full flex-2">
@@ -314,10 +326,10 @@ export default function Home() {
         <div className="mt-16 sm:p-34 p-14 w-full md:flex-row flex-col-reverse flex justify-start align-middle text-gray-300 bg-gradient-to-tr from-slate-800 to-slate-900 ">
           <div className="flex flex-col md:w-1/2 w-full flex-2">
             <h1 className="text-4xl pb-3 font-bold md:text-5xl text-transparent bg-gradient-to-r from-violet-800 to-indigo-900 bg-clip-text">
-            Dive into a Zone -Discover what it is?
+              Dive into a Zone -Discover what it is?
             </h1>
             <h2 className="text-xl mb-6 md:p-1 md:text-2xl text-gray-300">
-            Your own private music space
+              Your own private music space
             </h2>
             <ul className="flex flex-col gap-y-6 sm:gap-y-4 font-bold">
               <li className="flex justify-start gap-2 align-middle items-center">
@@ -325,22 +337,29 @@ export default function Home() {
                   1
                 </button>
                 Create or join a private zone — a room just for your group
-                </li>
+              </li>
               <li className="flex justify-start gap-2 align-middle items-center">
                 <button className="w-10 h-10 rounded-3xl bg-indigo-600 p-4 flex items-center justify-center text-2xl">
                   2
                 </button>
-                Add YouTube music streams together and enjoy collaborative playlists              </li>
+                Add YouTube music streams together and enjoy collaborative
+                playlists{" "}
+              </li>
               <li className="flex justify-start gap-2 align-middle items-center">
                 <button className="w-10 h-10 rounded-3xl bg-indigo-600 p-4 flex items-center justify-center text-2xl">
                   3
                 </button>
-                Upvote songs within your zone to set the group vibe              </li>
+                Upvote songs within your zone to set the group vibe{" "}
+              </li>
             </ul>
           </div>
           <div className="flex flex-1 justify-center md:w-1/2 w-full">
             <div className="md:h-96 h-80 md:m-0 mb-5 w-96 bg-gradient-to-tr items-center flex-col from-violet-800 to-indigo-900 flex justify-center align-middle">
-            <Image src="images.png" className="w-2/4 h-2/4" alt="" />
+              <Image
+              width={500}
+              height={500}
+              layout="intrinsic"
+              src="/images.png" className="w-2/4 h-2/4" alt="" />
             </div>
           </div>
         </div>
