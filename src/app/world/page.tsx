@@ -4,6 +4,7 @@ import { faPlay, faShareNodes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Loader from "../components/loader";
@@ -50,8 +51,8 @@ const World = () => {
 
   const playNext = async () => {
     const updatedExludes = [...excludedRef.current, currentStreamRef.current];
-    //@ts-expect-error:for sure
     console.log("this is the updated excludes", updatedExludes);
+    //@ts-expect-error:for sure
     setExcluded(updatedExludes);
     const availableStreams = streamsRef.current.filter((val) => {
       const filteredStream = updatedExludes.find((s) => {
@@ -258,6 +259,7 @@ const World = () => {
     }, 60000);
 
     return () => clearInterval(interval);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -281,7 +283,7 @@ const World = () => {
                   className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
                 >
                   <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                    <img
+                    <Image
                       className="border border-gray-300"
                       src={currentStream.imageUrl}
                       width="240"
@@ -357,7 +359,7 @@ const World = () => {
                       className="rounded-md inline-flex p-3 align-middle items-center m-1 min-w-[250px] h-[100px] scale-95 backdrop-blur-2xl font-serif bg-white/5 border hover:bg-white/10 border-gray-600 justify-between"
                     >
                       <div className="min-w-[120px] overflow-hidden h-[90px] w-[120px] flex p-1 justify-center align-middle items-center">
-                        <img
+                        <Image
                           className="border border-gray-300"
                           src={val.imageUrl}
                           width="240"

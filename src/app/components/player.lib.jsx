@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-
 const YouTubePlayer = ({ videoId, playNext }) => {
-  const ytPlayerRef = useRef<any>(null);
+  const ytPlayerRef = useRef(null);
   const playerContainerId = "ytPLAYER";
+
 
   useEffect(() => {
     const loadScript = () => {
@@ -15,20 +15,19 @@ const YouTubePlayer = ({ videoId, playNext }) => {
     };
 
     loadScript();
-
-    if (!(window as any)._ytCallbackSet) {
-      (window as any)._ytCallbackSet = true;
-      (window as any).onYouTubeIframeAPIReady = () => {
+    if (!(window._ytCallbackSet)) {
+      window._ytCallbackSet = true;
+      window.onYouTubeIframeAPIReady = () => {
         console.log("YT API Ready");
       };
     }
 
     const checkYTReadyAndInit = () => {
-      if ((window as any).YT && (window as any).YT.Player) {
+      if (window.YT && window.YT.Player) {
         if (ytPlayerRef.current) {
           ytPlayerRef.current.loadVideoById(videoId);
         } else {
-          ytPlayerRef.current = new (window as any).YT.Player(playerContainerId, {
+          ytPlayerRef.current = new window.YT.Player(playerContainerId, {
             height: "390",
             width: "640",
             videoId: videoId,
