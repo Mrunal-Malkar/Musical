@@ -3,21 +3,21 @@ import Stream from "../../../../../../models/stream.model";
 
 export async function POST(
   request: NextRequest,
-  context: { params: { zoneid: string } }
+  context: { params: Record<string, string> } // ✅ THIS is what Next.js wants
 ) {
-  const { zoneid } = context.params;
+  const zoneId = context.params.zoneid;
 
-  if (!zoneid) {
-    return NextResponse.json({ message: "zone id required!" }, { status: 404 });
+  if (!zoneId) {
+    return NextResponse.json({ message: "zone id required!" }, { status: 400 });
   }
 
   try {
-    console.log("this is the zone:", zoneid);
-    const tracks = await Stream.find({ zone: zoneid });
+    console.log("Zone ID:", zoneId);
+    const tracks = await Stream.find({ zone: zoneId });
 
-    if (!tracks || tracks.length === 0) {
+    if (!tracks?.length) {
       return NextResponse.json(
-        { message: "No stream in the zone" },
+        { message: "No streams in the zone" },
         { status: 200 }
       );
     }
@@ -25,7 +25,7 @@ export async function POST(
     return NextResponse.json({ streams: tracks }, { status: 200 });
   } catch (err) {
     return NextResponse.json(
-      { message: `error occurred: ${err}` },
+      { message: `Error occurred: ${err}` },
       { status: 500 }
     );
   }
