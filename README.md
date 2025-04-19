@@ -63,7 +63,6 @@ Install dependencies:
 
 yarn install
 
-# or
 
 npm install
 
@@ -88,7 +87,7 @@ MONGOOSE_PASSWORD=
 Run the app locally:
 
 yarn dev
-  # or
+ or
   npm run dev
 
 
