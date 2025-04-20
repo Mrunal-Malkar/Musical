@@ -1,7 +1,7 @@
 🎵 Musical
 
-
 Musical is a full-stack music-sharing web app built with Next.js, designed to create a social and collaborative space for discovering, sharing, and voting on YouTube music streams. It features two main interactive environments: World and Zone.
+![Screenshot (43)](https://github.com/user-attachments/assets/69c7611e-ee45-4648-9db1-84a1e913a856)
 
 🌍 World
 
