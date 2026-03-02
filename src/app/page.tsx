@@ -1,13 +1,5 @@
 "use client";
 import Navbar from "./components/navbar";
-import { motion } from "motion/react";
-import {
-  faArrowTrendUp,
-  faHeadphones,
-  faPlay,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
