@@ -37,7 +37,6 @@ const World = () => {
   const excludedRef = useRef(excluded);
 
   useEffect(() => {
-    console.log("This is the url", URL);
     const regex =
       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
     const match = URL.match(regex);
@@ -51,7 +50,6 @@ const World = () => {
 
   const playNext = async () => {
     const updatedExludes = [...excludedRef.current, currentStreamRef.current];
-    console.log("this is the updated excludes", updatedExludes);
     //@ts-expect-error:for sure
     setExcluded(updatedExludes);
     const availableStreams = streamsRef.current.filter((val) => {
@@ -62,7 +60,6 @@ const World = () => {
       });
       return filteredStream;
     });
-    console.log("this is the availableStreams", availableStreams);
 
     const nextStream = availableStreams.sort(
       (a, b) => b.upvotes.length - a.upvotes.length
@@ -103,12 +100,7 @@ const World = () => {
       if (streams != tracks.streams) {
         setStreamsLoading(false);
         if (!currentStream) {
-          console.log(
-            "entered in current stream this is tracks.streams",
-            tracks.streams
-          );
           if (!excluded || excluded.length == 0) {
-            console.log("this is the tracks for world", tracks);
             setCurrentStream(tracks.streams[0]);
             setCurrentStreamLoading(false);
             setURL(tracks.streams[0].url);
@@ -116,7 +108,6 @@ const World = () => {
             const filteredStreams = tracks.streams.filter((val: streamType) => {
               return !excluded.some((e) => e.url == val.url);
             });
-            console.log(`the filtered stream is ${filteredStreams}`);
             setCurrentStream(filteredStreams[0]);
             setCurrentStreamLoading(false);
             setURL(filteredStreams[0].url);
@@ -237,7 +228,6 @@ const World = () => {
           text: "I found this awesome stream on Musical 🎶",
           url: currentStream?.url,
         })
-        .then(() => console.log("Shared successfully!"))
         .catch((error) => console.error("Error sharing:", error));
     } else {
       alert("Sharing not supported on this browser.");
@@ -249,7 +239,6 @@ const World = () => {
       streams.map((val) => {
         if (val._id == id) {
           const check = val.upvotes.includes(user);
-          console.log("this is the check:", check);
           if (check) {
             disLike(id, user);
           } else {

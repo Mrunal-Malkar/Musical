@@ -5,13 +5,11 @@ import connectDB from "../../../../../db/mongoose";
 export async function POST(req: NextRequest) {
   try {
     const { url, userEmail,zoneId } = await req.json();
-    console.log("url is", zoneId);
     const regex =
       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
     const match = url.match(regex);
 
     if (!match || !userEmail) {
-      console.log("not a valid youtube url");
       return NextResponse.json(
         { message: "incorrect url of yt/or no userEmail" },
         { status: 411 }
@@ -20,7 +18,6 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
     const extractedId = (await match) ? match[1] : null;
-    console.log("the extracted id is:", extractedId);
     const requestingYtApi = await fetch(
       `https://www.googleapis.com/youtube/v3/videos?id=${extractedId}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,contentDetails`
     );
@@ -33,7 +30,6 @@ export async function POST(req: NextRequest) {
     if (url && imgUrl && title) {
       const findStream = await Stream.findOne({ url: url });
       if (findStream) {
-        console.log(`the stream of url ${url} is already present`);
         return NextResponse.json(
           {
             message: "the stream is already added!",
@@ -86,7 +82,6 @@ export async function POST(req: NextRequest) {
         }
       );
     } else {
-      console.log("error while creating a stream!!");
       return NextResponse.json(
         {
           message: "Failed to create a stream",
@@ -97,7 +92,6 @@ export async function POST(req: NextRequest) {
       );
     }
   } catch (e) {
-    console.log("error while creating a stream:", e);
     return NextResponse.json(
       {
         message: `failed in creating a stream${e}`,

@@ -26,8 +26,6 @@ export default function Home() {
       method: "GET",
     });
     if (response.status == 200) {
-      
-    console.log("trying to fetch all the stream-backend 2")
       const data = await response.json();
       if (data.streams.length > 5) {
         setStreams(data.streams.slice(0, 5));

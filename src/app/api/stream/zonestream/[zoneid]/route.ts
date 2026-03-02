@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    console.log("Zone ID:", zoneId);
     const tracks = await Stream.find({ zone: zoneId }).sort({upvotes:-1});
 
     if (!tracks?.length) {

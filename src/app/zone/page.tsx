@@ -40,7 +40,6 @@ const Zone = () => {
   const excludedRef = useRef(excluded);
 
   useEffect(() => {
-    console.log("This is the url", URL);
     const regex =
       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
     const match = URL.match(regex);
@@ -108,21 +107,17 @@ const Zone = () => {
         setStreamsLoading(false);
         if (!currentStream) {
           if (!excluded || excluded.length == 0) {
-            console.log("this is tracks:", tracks);
             setCurrentStream(tracks.streams[0]);
             setCurrentStreamLoading(false);
             setURL(tracks.streams[0].url);
-            console.log("this is tracks:", tracks);
           } else {
             setCurrentStreamLoading(false);
             const filteredStreams = tracks.streams.filter((val: streamType) => {
               return !excluded.some((e) => e.url == val.url);
             });
-            console.log(`the filtered stream is ${filteredStreams}`);
             setCurrentStream(filteredStreams[0]);
             setCurrentStreamLoading(false);
             setURL(filteredStreams[0].url);
-            console.log("this is tracks:", tracks);
           }
         }
         return setStreams(tracks.streams);
@@ -240,7 +235,6 @@ const Zone = () => {
       streams.map((val) => {
         if (val._id == id) {
           const check = val.upvotes.includes(user);
-          console.log("this is the check:", check);
           if (check) {
             disLike(id, user);
           } else {
@@ -261,7 +255,6 @@ const Zone = () => {
           text: "I found this awesome stream on Musical 🎶",
           url: currentStream?.url,
         })
-        .then(() => console.log("Shared successfully!"))
         .catch((error) => console.error("Error sharing:", error));
     } else {
       alert("Sharing not supported on this browser.");

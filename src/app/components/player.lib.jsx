@@ -18,7 +18,6 @@ const YouTubePlayer = ({ videoId, playNext }) => {
     if (!(window._ytCallbackSet)) {
       window._ytCallbackSet = true;
       window.onYouTubeIframeAPIReady = () => {
-        console.log("YT API Ready");
       };
     }
 
