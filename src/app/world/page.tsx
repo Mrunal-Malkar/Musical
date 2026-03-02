@@ -94,7 +94,8 @@ const World = () => {
       setCurrentStreamLoading(true);
     }
     setStreamsLoading(true);
-    const streams = await fetch("https://musical-eosin.vercel.app/api/stream", {
+    const streams = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+
+      "/api/stream/", {
       method: "GET",
     });
     if (streams.status == 200) {

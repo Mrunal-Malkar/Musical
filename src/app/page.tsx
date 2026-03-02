@@ -22,8 +22,7 @@ export default function Home() {
 
   const fetchStreams = async () => {
     
-    console.log("trying to fetch all the stream-frontend1")
-    const response = await fetch("https://musical-eosin.vercel.app/api/stream", {
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+`/api/stream`, {
       method: "GET",
     });
     if (response.status == 200) {

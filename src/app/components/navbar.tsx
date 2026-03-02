@@ -21,12 +21,12 @@ const Navbar = () => {
             className="text-indigo-500 text-2xl"
           />
         </div>
-        <h1 className="font-bold tracking-tight text-white text-xl sm:text-2xl">
+        <h1 className="font-bold tracking-tight text-blue-200 text-xl sm:text-2xl">
           Musical
         </h1>
       </div>
 
-      <div className="font-semibold text-md sm:flex hidden justify-between items-center sm:gap-x-3">
+      <div className="font-semibold text-md sm:flex hidden justify-between md:gap-x-24 items-center sm:gap-x-3">
         <Link href="/">
           <span
             className={currentPath == "/" ? "text-indigo-400 scale-110" : "text-white"}

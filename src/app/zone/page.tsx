@@ -54,7 +54,6 @@ const Zone = () => {
 
   const playNext = async () => {
     const updatedExludes = [...excludedRef.current, currentStreamRef.current];
-    console.log("this is the updated excludes", updatedExludes);
     //@ts-expect-error:for sure
     setExcluded(updatedExludes);
     const availableStreams = streamsRef.current.filter((val) => {
@@ -65,7 +64,6 @@ const Zone = () => {
       });
       return filteredStream;
     });
-    console.log("this is the availableStreams", availableStreams);
 
     const nextStream = availableStreams.sort(
       (a, b) => b.upvotes.length - a.upvotes.length
@@ -98,8 +96,8 @@ const Zone = () => {
     if (!zoneId) {
       router.push("/zoneId");
     }
-    const streams = await fetch(
-      `https://musical-eosin.vercel.app/api/stream/zonestream/${zoneId}`,
+    const streams = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+
+      "/api/stream/zonestream/"+zoneId,
       {
         method: "POST",
       }
