@@ -93,8 +93,8 @@ const World = () => {
     setStreamsLoading(true);
     const streams = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+
       "/api/stream/", {
-      method: "GET",
-    });
+        method: "GET",
+      });
     if (streams.status == 200) {
       const tracks = await streams.json();
       if (streams != tracks.streams) {
